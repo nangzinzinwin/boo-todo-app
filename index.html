@@ -8,7 +8,7 @@
     <link rel="icon" type="image/png" href="Img/logo.png">
     
     <!-- Handwritten Font for Read Aura Feature -->
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&display=swap" rel="stylesheet">
 
     
     <script>
@@ -148,7 +148,7 @@
     
     <!-- 5. READ AURA: THE LETTER -->
     <div id="read-aura-letter-modal" class="custom-modal" style="text-align: left; max-width: 320px; z-index: 3300; padding: 30px 30px 25px 30px; background-color: #fdfbf7; box-shadow: 0 15px 35px rgba(0,0,0,0.2); border-radius: 4px; background-image: repeating-linear-gradient(transparent, transparent 29px, #e0e0e0 29px, #e0e0e0 30px);">
-        <div style="font-family: 'Dancing Script', cursive; font-size: 24px; color: #111; font-weight: 600; line-height: 30px; padding-top: 4px;">
+        <div style="font-family: 'Kalam', cursive; font-size: 20px; color: #111; font-weight: 400; line-height: 30px; padding-top: 4px;">
             To the beautiful soul reading this,<br><br>
             <span id="aura-letter-content" style="color: #000;">You are capable of amazing things. Trust your journey.</span><br><br>
             ~ Yours, Boo
@@ -230,48 +230,6 @@
         <button id="cancel-complete-btn" style="background: none; border: none; color: var(--completed-text); font-weight: bold; cursor: pointer; padding: 10px; width: 100%;" data-i18n="cancel-btn">CANCEL</button>
     </div>
 
-    <!-- TIME PICKER MODAL (SEGMENTED AM/PM) -->
-    <div id="time-picker-modal" class="custom-modal" style="max-width: 270px; padding: 20px; z-index: 3050;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h3 style="margin: 0; color: var(--text-color); font-size: 16px;" data-i18n="set-time">Set Time</h3>
-        </div>
-        
-        <div style="text-align: center; margin-bottom: 25px; display: flex; align-items: center; justify-content: center;">
-            <span id="clock-display-hour" style="font-size: 44px; font-weight: bold; color: var(--text-color);">8</span>
-            <span style="font-size: 44px; color: var(--completed-text); margin: 0 5px; position: relative; top: -3px;">:</span>
-            <span id="clock-display-min" style="font-size: 44px; color: var(--completed-text);">00</span>
-            
-            <div style="display: inline-flex; flex-direction: column; background: var(--input-bg); border: 2px solid var(--border-color); border-radius: 12px; overflow: hidden; margin-left: 15px;">
-                <div id="clock-am-btn" style="padding: 8px 12px; font-size: 14px; font-weight: bold; cursor: pointer; background: var(--primary-btn); color: white; border-bottom: 1px solid var(--border-color);">AM</div>
-                <div id="clock-pm-btn" style="padding: 8px 12px; font-size: 14px; font-weight: bold; cursor: pointer; background: transparent; color: var(--completed-text);">PM</div>
-            </div>
-        </div>
-        
-        <div style="position: relative; width: 180px; height: 180px; border-radius: 50%; background-color: var(--input-bg); margin: 0 auto 30px auto; border: 2px solid var(--container-bg);">
-            <div style="position: absolute; top: 50%; left: 50%; width: 8px; height: 8px; background: var(--primary-btn); border-radius: 50%; transform: translate(-50%, -50%); z-index: 2;"></div>
-            <div id="clock-hand" style="position: absolute; top: 50%; left: 50%; width: 65px; height: 3px; background: var(--primary-btn); transform-origin: left center; transform: translateY(-50%) rotate(150deg); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
-                <div style="position: absolute; right: -14px; top: -13px; width: 28px; height: 28px; background: var(--primary-btn); border-radius: 50%; opacity: 0.4;"></div>
-            </div>
-            <span class="clock-number" data-val="12" style="position: absolute; top: 5px; left: 50%; transform: translateX(-50%); color: var(--text-color); font-size: 14px; font-weight: bold; cursor: pointer; padding: 8px;">12</span>
-            <span class="clock-number" data-val="6" style="position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); color: var(--text-color); font-size: 14px; font-weight: bold; cursor: pointer; padding: 8px;">6</span>
-            <span class="clock-number" data-val="9" style="position: absolute; top: 50%; left: 5px; transform: translateY(-50%); color: var(--text-color); font-size: 14px; font-weight: bold; cursor: pointer; padding: 8px;">9</span>
-            <span class="clock-number" data-val="3" style="position: absolute; top: 50%; right: 5px; transform: translateY(-50%); color: var(--text-color); font-size: 14px; font-weight: bold; cursor: pointer; padding: 8px;">3</span>
-            <span class="clock-number" data-val="1" style="position: absolute; top: 18px; right: 45px; color: var(--text-color); font-size: 13px; cursor: pointer; padding: 5px;">1</span>
-            <span class="clock-number" data-val="2" style="position: absolute; top: 45px; right: 18px; color: var(--text-color); font-size: 13px; cursor: pointer; padding: 5px;">2</span>
-            <span class="clock-number" data-val="4" style="position: absolute; bottom: 45px; right: 18px; color: var(--text-color); font-size: 13px; cursor: pointer; padding: 5px;">4</span>
-            <span class="clock-number" data-val="5" style="position: absolute; bottom: 18px; right: 45px; color: var(--text-color); font-size: 13px; cursor: pointer; padding: 5px;">5</span>
-            <span class="clock-number" data-val="7" style="position: absolute; bottom: 18px; left: 45px; color: var(--text-color); font-size: 13px; cursor: pointer; padding: 5px;">7</span>
-            <span class="clock-number" data-val="8" style="position: absolute; bottom: 45px; left: 18px; color: var(--text-color); font-size: 13px; cursor: pointer; padding: 5px;">8</span>
-            <span class="clock-number" data-val="10" style="position: absolute; top: 45px; left: 18px; color: var(--text-color); font-size: 13px; cursor: pointer; padding: 5px;">10</span>
-            <span class="clock-number" data-val="11" style="position: absolute; top: 18px; left: 45px; color: var(--text-color); font-size: 13px; cursor: pointer; padding: 5px;">11</span>
-        </div>
-        
-        <div style="display: flex; justify-content: flex-end; gap: 15px;">
-            <button id="cancel-time-btn" style="background: none; border: none; color: var(--completed-text); font-weight: bold; cursor: pointer; font-size: 14px;" data-i18n="cancel-btn">CANCEL</button>
-            <button id="done-time-btn" style="background: none; border: none; color: #4285F4; font-weight: bold; cursor: pointer; font-size: 14px;">DONE</button>
-        </div>
-    </div>
-
     <!-- HABIT LIST MODAL (RESTORED BIG MODAL) -->
     <div id="habit-modal" class="custom-modal" style="padding: 20px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
@@ -305,6 +263,7 @@
                 <span style="color: var(--completed-text);">›</span>
             </div>
 
+            
             <!-- Pray (Peaceful Candle) -->
             <div class="habit-item" data-habit="Pray">
                 <svg class="svg-icon" style="width:24px; height:24px; color: #ab47bc;" viewBox="0 0 24 24">
@@ -680,10 +639,6 @@
                     <button id="detail-done-btn" style="background:none; border:none; color: var(--primary-btn); font-size: 22px; cursor:pointer;" title="Mark as Done">
                         <svg class="svg-icon" style="margin:0;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </button>
-                    <!-- DELETE BUTTON -->
-                    <button id="detail-delete-btn" style="background:none; border:none; color: #e53935; font-size: 20px; cursor:pointer;" title="Delete Task">
-                        <svg class="svg-icon" style="margin:0;" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                    </button>
                 </div>
             </div>
 
@@ -710,8 +665,9 @@
                     <p style="font-size: 11px; color: var(--completed-text); margin: 0;">(Tap to remove)</p>
                 </div>
                 
-                <div id="reminder-time-container" style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <button id="add-time-btn" class="time-pill" style="font-weight: bold; font-size: 18px; padding: 5px 15px; background-color: var(--container-bg); border-style: dashed; color: var(--primary-btn); border-color: var(--primary-btn);">+</button>
+                <div id="reminder-time-container" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
+                    <!-- Native Time Picker Input -->
+                    <input type="time" id="add-time-input" style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--primary-btn); background-color: var(--container-bg); color: var(--primary-btn); font-size: 16px; font-weight: bold; outline: none;">
                 </div>
             </div>
 
