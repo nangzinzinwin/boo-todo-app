@@ -16,7 +16,7 @@ A cute, simple, and aesthetic Progressive Web App (PWA) designed to help you man
 
 ## Live Demo
 You can use and install the webapp directly from your browser here:
-[ ]
+[https://nangzinzinwin.github.io/boo-todo-app/ ]
 
 ---
 Developed by [@nangzinzinwin](https://github.com/nangzinzinwin)
