@@ -1,21 +1,42 @@
 {
-  "name": "Boo Boo Do",
-  "short_name": "Boo Boo Do",
+  "name": "Boo - To Do List",
+  "short_name": "Boo",
   "description": "Your cute and friendly task organizer",
+  "id": "/",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
+  "orientation": "any",
   "background_color": "#c8e6c9",
   "theme_color": "#66bb6a",
   "icons": [
     {
       "src": "Img/logo.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "Img/logo.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "New Task",
+      "short_name": "Add Task",
+      "description": "Quickly add a new task to Boo",
+      "url": "./index.html#tasks",
+      "icons": [{"src": "Img/logo.png", "sizes": "192x192"}]
+    },
+    {
+      "name": "Aura Jar",
+      "short_name": "Aura",
+      "description": "Check your daily Aura Jar",
+      "url": "./index.html#profile",
+      "icons": [{"src": "Img/logo.png", "sizes": "192x192"}]
     }
   ]
 }
