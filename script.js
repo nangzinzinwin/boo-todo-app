@@ -2,7 +2,6 @@
 let tasks = [];
 try { 
     tasks = JSON.parse(localStorage.getItem('boo_tasks')) || []; 
-    // Data Migration for older tasks to include emails
     tasks = tasks.map(t => ({
         ...t,
         reminderTimes: t.reminderTimes || [],
@@ -17,6 +16,7 @@ try {
 } catch(e) {}
 
 let currentTheme = localStorage.getItem('boo_theme') || 'default';
+let previousTheme = localStorage.getItem('boo_prev_theme') || 'default'; // Theme Bug Fix အတွက် သိမ်းဆည်းရန်
 let customUserBg = localStorage.getItem('boo_custom_bg') || '';
 let userAvatar = localStorage.getItem('boo_user_avatar') || '';
 let userName = localStorage.getItem('boo_username') || 'Boo User';
@@ -97,7 +97,7 @@ const translations = {
         "lang-select-title": "ဘာသာစကားရွေးချယ်ရန်", "mark-status": "တိုးတက်မှုကို အပ်ဒိတ်လုပ်ပါ",
         "save-progress": "တိုးတက်မှုကို သိမ်းဆည်းရန်", "set-time": "အချိန်သတ်မှတ်ရန်", "create-task-title": "လုပ်စရာအသစ်ဖန်တီးရန်",
         "task-input-ph": "ဘာလုပ်ဖို့လိုလဲ?", "save-to-cat": "အမျိုးအစားထဲ သိမ်းရန်:", "save-to-date": "နောက်ဆုံးရက်:", "add-task-btn": "လုပ်စရာထည့်ရန်",
-        "habit-btn": "အလေ့အကျင့်ကောင်းလေးတွေ စတင်လိုက်ရအောင်?", "tasks-for": "လုပ်စရာများ - ", "cal-sync-soon": "ဒီနေ့အတွက် အစီအစဉ်ထည့်ရန် + ကို နှိပ်ပါ!",
+        "habit-btn": "အလေ့အကျင့်ကောင်းတွေ စတင်လိုက်ရအောင်?", "tasks-for": "လုပ်စရာများ - ", "cal-sync-soon": "ဒီနေ့အတွက် အစီအစဉ်ထည့်ရန် + ကို နှိပ်ပါ!",
         "click-login": "ပရိုဖိုင်ပြင်ရန် နှိပ်ပါ", "connect-cal": "Google Calendar ချိတ်ဆက်ရန်", "tasks-overview": "လုပ်စရာ အကျဉ်းချုပ်",
         "completed-tasks": "ပြီးစီးသော လုပ်စရာများ", "pending-tasks": "ကျန်ရှိသော လုပ်စရာများ", "next-7-days": "နောက် ၇ ရက်အတွင်း လုပ်စရာများ",
         "settings-title": "ဆက်တင်များ", "set-sync": "အကောင့်ထပ်တူပြုခြင်း", "set-notif": "သတိပေးချက်များ", "set-cal": "ပြက္ခဒိန်ချိတ်ဆက်ရန်", 
@@ -107,7 +107,7 @@ const translations = {
         "star-hint": "လုပ်စရာကို ကြယ်နှိပ်ပြီး ဤနေရာတွင် သိမ်းပါ!", "detail-edit": "ဆက်တင်များကို ပြင်ရန်", "detail-delete": "လုပ်စရာဖျက်ရန်",
         "detail-done": "ပြီးစီးကြောင်း အမှတ်အသားလုပ်ရန်", "detail-hint": "ပြင်ဆင်ရန် အောက်ပါအချက်များကို နှိပ်ပါ။",
         "nav-tasks": "လုပ်စရာများ", "nav-calendar": "ပြက္ခဒိန်", "nav-boo": "Boo",
-        "support-popup": "Coffee တိုက်ချင်ရင် နောက်မှ ထပ်ထည့်ပေးပါမယ်နော်! ☕",
+        "support-popup": "Coffee တိုက်ချင်ရင် နောက်မှ ထပ်ထည့်ပေးပါမယ်!☕ ",
         "normal-task-done": "လုပ်စရာ ပြီးစီးပါပြီ",
         "next-7-empty": "နောက် ၇ ရက်အတွင်း လုပ်စရာမရှိပါ။",
         "tag-friends": "Tag Friends (Emails)"
@@ -283,7 +283,7 @@ document.getElementById('toggle-category-btn')?.addEventListener('click', () => 
 
 // Dynamic Support Translation Trigger
 document.getElementById('sidebar-support-btn')?.addEventListener('click', () => {
-    booAlert(translations[currentLang]["support-popup"] || "Coffee တိုက်ချင်ရင် နောက်မှ ထပ်ထည့်ပေးပါမယ်နော်! ☕");
+    booAlert(translations[currentLang]["support-popup"] || "Coffee တိုက်ချင်ရင် နောက်မှ ထပ်ထည့်ပေးပါမယ်! ☕");
 });
 
 document.getElementById('sidebar-signout-btn')?.addEventListener('click', () => {
@@ -326,8 +326,12 @@ function initSidebarSwipe() {
     }
 }
 
-/* THEMES, AVATAR & USER NAME EDIT */
+/* THEMES, AVATAR & USER NAME EDIT (BUG FIXED HERE) */
 function loadTheme(theme) {
+    if (theme !== 'dark') {
+        previousTheme = theme;
+        localStorage.setItem('boo_prev_theme', previousTheme);
+    }
     document.documentElement.setAttribute('data-theme', theme);
     currentTheme = theme;
     localStorage.setItem('boo_theme', theme);
@@ -337,7 +341,18 @@ function loadTheme(theme) {
         if (preview) { preview.style.display = 'block'; preview.style.backgroundImage = `url(${customUserBg})`; }
     }
 }
-document.getElementById('theme-toggle')?.addEventListener('click', () => loadTheme(currentTheme === 'dark' ? 'default' : 'dark'));
+
+// Night mode toggle fix with previousTheme memory
+document.getElementById('theme-toggle')?.addEventListener('click', () => {
+    if (currentTheme === 'dark') {
+        loadTheme(previousTheme || 'default');
+    } else {
+        previousTheme = currentTheme;
+        localStorage.setItem('boo_prev_theme', previousTheme);
+        loadTheme('dark');
+    }
+});
+
 document.querySelectorAll('.theme-option').forEach(btn => {
     btn.addEventListener('click', (e) => {
         loadTheme(e.target.getAttribute('data-theme-choice'));
@@ -706,9 +721,11 @@ function openTaskDetail(task) {
     document.getElementById('edit-phrase-input').value = task.text;
     document.getElementById('edit-date-input').value = task.date || '';
     
-    // Set current emails in edit modal
     document.getElementById('edit-emails-input').value = task.emails && task.emails.length > 0 ? task.emails.join(', ') : '';
     
+    const timeInput = document.getElementById('add-time-input');
+    if (timeInput) timeInput.value = '';
+
     renderReminderTimes(task);
     
     const saveBtn = document.getElementById('save-task-settings-btn');
@@ -721,6 +738,19 @@ function openTaskDetail(task) {
         
         const emailsRaw = document.getElementById('edit-emails-input').value;
         task.emails = emailsRaw.split(',').map(e => e.trim()).filter(e => e !== '');
+        
+        if (timeInput && timeInput.value) {
+            let [hours, minutes] = timeInput.value.split(':');
+            let ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            const timeStr = `${hours}:${minutes} ${ampm}`;
+            
+            if (!task.reminderTimes) task.reminderTimes = [];
+            if (!task.reminderTimes.includes(timeStr)) {
+                task.reminderTimes.push(timeStr);
+            }
+        }
         
         saveTasks();
         renderTasks();
@@ -736,7 +766,11 @@ function openTaskDetail(task) {
 
 function renderReminderTimes(task) {
     const container = document.getElementById('reminder-time-container');
-    container.innerHTML = '';
+    if(!container) return;
+    
+    const timeInput = document.getElementById('add-time-input');
+    container.innerHTML = ''; 
+    if(timeInput) container.appendChild(timeInput);
     
     task.reminderTimes.forEach((timeStr, index) => {
         const btn = document.createElement('button');
@@ -747,19 +781,8 @@ function renderReminderTimes(task) {
             saveTasks();
             renderReminderTimes(task);
         };
-        container.appendChild(btn);
+        container.insertBefore(btn, timeInput); 
     });
-
-    const addBtn = document.createElement('button');
-    addBtn.id = 'add-time-btn';
-    addBtn.className = 'time-pill';
-    addBtn.style = 'font-weight: bold; font-size: 18px; padding: 5px 15px; background-color: var(--container-bg); border-style: dashed; color: var(--primary-btn); border-color: var(--primary-btn);';
-    addBtn.textContent = '+';
-    addBtn.onclick = () => {
-        document.getElementById('time-picker-modal').classList.add('show');
-        document.getElementById('overlay').classList.add('show');
-    };
-    container.appendChild(addBtn);
 }
 
 function renderStarredTasks() {
@@ -790,7 +813,6 @@ function renderStarredTasks() {
     }
 }
 
-// RESTORED: Opens Good Habits Modal when clicking the pill on the Task Screen
 document.getElementById('open-habit-list-btn')?.addEventListener('click', () => {
     document.getElementById('habit-modal').classList.add('show');
     document.getElementById('overlay').classList.add('show');
@@ -801,7 +823,6 @@ document.getElementById('close-habit-btn')?.addEventListener('click', () => {
     document.getElementById('overlay').classList.remove('show');
 });
 
-// Create task directly from Big Habit Modal
 document.querySelectorAll('.habit-item').forEach(item => {
     item.addEventListener('click', async (e) => {
         const habitText = item.getAttribute('data-habit');
@@ -820,7 +841,6 @@ document.querySelectorAll('.habit-item').forEach(item => {
     });
 });
 
-// Push Quick Pills text into the Task Input Box
 document.querySelectorAll('.habit-pill-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         const taskText = btn.getAttribute('data-task');
@@ -1032,7 +1052,6 @@ document.getElementById('calendar-fab')?.addEventListener('click', () => {
     document.getElementById('new-task-input').focus();
 });
 
-
 /* MARK AS DONE CHECKLIST LOGIC IN TASK DETAIL */
 document.getElementById('detail-done-btn')?.addEventListener('click', () => {
     if (!currentActiveTask) return;
@@ -1104,62 +1123,12 @@ document.getElementById('confirm-complete-btn')?.addEventListener('click', () =>
             currentActiveTask.completed = true;
             saveTasks();
             renderTasks();
-            booAlert("Awesome! Task marked as fully complete for today! 🎉");
+            booAlert("Awesome! Task marked as fully complete for today! ");
         } else {
-            booAlert("Progress saved! Keep going! 💪");
+            booAlert("Progress saved! Keep going!");
         }
     }
 });
-
-
-/* TIME PICKER LOGIC (SEGMENTED AM/PM) */
-let clockIsAm = true;
-const clockHand = document.getElementById('clock-hand');
-const clockDisplayHour = document.getElementById('clock-display-hour');
-
-document.getElementById('add-time-btn')?.addEventListener('click', () => { document.getElementById('time-picker-modal').classList.add('show'); document.getElementById('overlay').classList.add('show'); });
-document.getElementById('cancel-time-btn')?.addEventListener('click', () => { document.getElementById('time-picker-modal').classList.remove('show'); document.getElementById('overlay').classList.remove('show'); });
-
-document.querySelectorAll('.clock-number').forEach(num => {
-    num.addEventListener('click', (e) => {
-        const val = e.target.getAttribute('data-val');
-        clockDisplayHour.textContent = val;
-        clockHand.style.transform = `translateY(-50%) rotate(${(val * 30) - 90}deg)`;
-    });
-});
-
-document.getElementById('clock-am-btn')?.addEventListener('click', () => { 
-    clockIsAm = true; 
-    document.getElementById('clock-am-btn').style.background = "var(--primary-btn)"; 
-    document.getElementById('clock-am-btn').style.color = "white"; 
-    document.getElementById('clock-pm-btn').style.background = "transparent"; 
-    document.getElementById('clock-pm-btn').style.color = "var(--completed-text)"; 
-});
-
-document.getElementById('clock-pm-btn')?.addEventListener('click', () => { 
-    clockIsAm = false; 
-    document.getElementById('clock-pm-btn').style.background = "var(--primary-btn)"; 
-    document.getElementById('clock-pm-btn').style.color = "white"; 
-    document.getElementById('clock-am-btn').style.background = "transparent"; 
-    document.getElementById('clock-am-btn').style.color = "var(--completed-text)"; 
-});
-
-document.getElementById('done-time-btn')?.addEventListener('click', () => {
-    const timeStr = `${clockDisplayHour.textContent}:${document.getElementById('clock-display-min').textContent} ${clockIsAm ? 'AM' : 'PM'}`;
-    
-    if (currentActiveTask) {
-        if (!currentActiveTask.reminderTimes) currentActiveTask.reminderTimes = [];
-        if (!currentActiveTask.reminderTimes.includes(timeStr)) {
-            currentActiveTask.reminderTimes.push(timeStr);
-            saveTasks();
-            renderReminderTimes(currentActiveTask);
-        }
-    }
-    
-    document.getElementById('time-picker-modal').classList.remove('show');
-    document.getElementById('overlay').classList.remove('show');
-});
-
 
 /* SETTINGS & EXTERNAL LINKS */
 document.getElementById('set-sync-btn')?.addEventListener('click', () => booAlert('Account Sync is active!'));
@@ -1196,7 +1165,7 @@ if (notifToggleBtns.length > 1) {
 }
 
 /* GOOGLE CALENDAR API LOGIC (WITH EMAIL INVITATIONS) */
-const CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com';
+const CLIENT_ID = '340484669276-2vmhnu567lnv2c20bunhj5oh28t00gp6.apps.googleusercontent.com';
 const SCOPES = 'https://www.googleapis.com/auth/calendar.events';
 
 function gapiLoaded() { gapi.load('client', initializeGapiClient); }
@@ -1240,7 +1209,6 @@ async function addEventToCalendar(task) {
         'end': { 'date': task.date || new Date().toISOString().split('T')[0] }
     };
 
-    // If task has emails, add them as attendees to trigger Invitations (Accept/Decline)
     if (task.emails && task.emails.length > 0) {
         event.attendees = task.emails.map(email => ({ 'email': email.trim() }));
     }
@@ -1249,7 +1217,7 @@ async function addEventToCalendar(task) {
         await gapi.client.calendar.events.insert({ 
             'calendarId': 'primary', 
             'resource': event,
-            'sendUpdates': 'all' // This tells Google to send the email invitations!
+            'sendUpdates': 'all'
         }); 
         if(task.emails && task.emails.length > 0) {
             booAlert("Task saved and Invitations sent successfully! 💌");
