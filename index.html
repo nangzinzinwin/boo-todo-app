@@ -2,104 +2,192 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boo Boo Do</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Boo - To Do List</title>
     
     <link rel="icon" type="image/png" href="Img/logo.png">
     
-    <script>
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js")
-        .then(reg => console.log("Service Worker registered!", reg))
-        .catch(err => console.error("Service Worker failed!", err));
-    });
-  }
-</script>
+    <!-- Handwritten Font for Read Aura Feature -->
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&display=swap" rel="stylesheet">
 
     
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("./sw.js")
+            .then(reg => console.log("Service Worker registered!", reg))
+            .catch(err => console.error("Service Worker failed!", err));
+        });
+      }
+    </script>
     <link rel="stylesheet" href="style.css">
+    
+    <!-- Inline style to keep SVG icons aligned before loading CSS -->
+    <style>.svg-icon { width: 20px; height: 20px; vertical-align: middle; margin-right: 8px; stroke-width: 2; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }</style>
     <script src="https://apis.google.com/js/api.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     
     <link rel="manifest" href="manifest.json">
-<script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js");
-  }
-</script>
-
 </head>
 <body>
-
+    <!-- SIDEBAR MENU -->
     <div id="sidebar" class="sidebar">
-        <div class="sidebar-header">
-            <h2 data-i18n="menu-header">Menu</h2>
+        <div class="sidebar-header" style="display: flex; align-items: center; gap: 10px;">
+            <svg class="svg-icon" style="width:28px; height:28px; margin:0;" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12v9.5c0 .83.67 1.5 1.5 1.5.4 0 .78-.16 1.06-.44L6 21.12l1.44 1.44c.59.59 1.53.59 2.12 0L11 21.12l1.44 1.44c.59.59 1.53.59 2.12 0L16 21.12l1.44 1.44c.28.28.66.44 1.06.44.83 0 1.5-.67 1.5-1.5V12c0-5.52-4.48-10-10-10zM9 10h.01M15 10h.01"/></svg>
+            <h2 data-i18n="menu-header" style="margin: 0;">Menu</h2>
         </div>
         <ul class="sidebar-links" style="padding-bottom: 0;">
-            <li id="menu-all-tasks" class="sidebar-item"><span data-i18n="menu-all-tasks">📝 All Tasks</span> <span id="sidebar-all-count" class="sidebar-badge">0</span></li>
-            <li id="open-starred-btn" class="sidebar-item"><span data-i18n="menu-starred">⭐ Starred</span> <span id="sidebar-star-count" class="sidebar-badge">0</span></li>
+            <li id="menu-all-tasks" class="sidebar-item">
+                <svg class="svg-icon" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                <span data-i18n="menu-all-tasks">All Tasks</span> 
+                <span id="sidebar-all-count" class="sidebar-badge">0</span>
+            </li>
+            <li id="open-starred-btn" class="sidebar-item">
+                <svg class="svg-icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                <span data-i18n="menu-starred">Starred</span> 
+                <span id="sidebar-star-count" class="sidebar-badge">0</span>
+            </li>
         </ul>
         <div class="sidebar-divider" style="margin: 10px 20px;"></div>
         <ul class="sidebar-links" style="padding-top: 0; padding-bottom: 0;">
             <li id="toggle-category-btn" class="sidebar-item">
-                <span data-i18n="menu-category">🗂️ Category</span>
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                <span data-i18n="menu-category">Category</span>
                 <span id="category-arrow" style="float: right; font-size: 14px; transition: transform 0.3s ease;">▼</span>
             </li>
         </ul>
         <div id="category-folder" class="category-folder">
             <ul class="sidebar-links" id="sidebar-categories-list" style="padding: 0;"></ul>
             <ul class="sidebar-links" style="padding: 0 0 10px 0;">
-                <li id="add-new-category-btn" class="sidebar-item" style="color: var(--primary-btn); font-weight: bold;" data-i18n="menu-create-list">＋ Create New Category</li>
+                <li id="add-new-category-btn" class="sidebar-item" style="color: var(--primary-btn); font-weight: bold;">
+                    <svg class="svg-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <span data-i18n="menu-create-list">Create New Category</span>
+                </li>
             </ul>
         </div>
         <div class="sidebar-divider" style="margin: 10px 20px;"></div>
         <ul class="sidebar-links" style="padding-top: 0;">
-            <li id="open-theme-btn" class="sidebar-item" data-i18n="menu-theme">🎨 Theme</li>
-            <li id="open-widgets-btn" class="sidebar-item" data-i18n="menu-widgets">🧩 Widgets</li>
-            <li id="open-settings-btn" class="sidebar-item" data-i18n="menu-settings">⚙️ Settings</li>
-            <li id="sidebar-support-btn" class="sidebar-item" data-i18n="support-title">💖 Support</li>
-            <li id="family-app-btn" class="sidebar-item" data-i18n="menu-family">👨‍👩‍👧‍👦 Family App</li>
-            <li id="sidebar-signout-btn" class="sidebar-item" style="color: #e53935;" data-i18n="menu-signout">🚪 Sign Out</li>
+            <li id="open-theme-btn" class="sidebar-item">
+                <svg class="svg-icon" viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r=".5"></circle><circle cx="17.5" cy="10.5" r=".5"></circle><circle cx="8.5" cy="7.5" r=".5"></circle><circle cx="6.5" cy="12.5" r=".5"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path></svg>
+                <span data-i18n="menu-theme">Theme</span>
+            </li>
+            <li id="open-settings-btn" class="sidebar-item">
+                <svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <span data-i18n="menu-settings">Settings</span>
+            </li>
+            <li id="sidebar-support-btn" class="sidebar-item">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                <span data-i18n="support-title">Support</span>
+            </li>
+            <li id="sidebar-signout-btn" class="sidebar-item" style="color: #e53935;">
+                <svg class="svg-icon" style="stroke: #e53935;" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                <span data-i18n="menu-signout">Sign Out</span>
+            </li>
         </ul>
     </div>
-
     <div id="overlay" class="overlay"></div>
-
-    <div id="mood-modal" class="custom-modal" style="text-align: center; max-width: 320px; z-index: 3100; padding: 30px 20px;">
-        <div style="font-size: 50px; margin-bottom: 10px; filter: drop-shadow(0px 5px 10px rgba(0,0,0,0.15));">👾</div>
-        <h3 style="margin-top: 0; margin-bottom: 10px; color: var(--text-color); font-size: 20px;" data-i18n="mood-ask">How are you feeling today?</h3>
-        <p style="color: var(--completed-text); font-size: 14px; margin-bottom: 25px;" data-i18n="mood-desc">Take a deep breath. You are doing great.</p>
-        
-        <div style="display: flex; justify-content: space-between; gap: 10px; margin-bottom: 10px;">
-            <button class="mood-btn" data-mood="🤩" style="background:none; border:none; font-size: 38px; cursor:pointer;">🤩</button>
-            <button class="mood-btn" data-mood="🥰" style="background:none; border:none; font-size: 38px; cursor:pointer;">🥰</button>
-            <button class="mood-btn" data-mood="😌" style="background:none; border:none; font-size: 38px; cursor:pointer;">😌</button>
-            <button class="mood-btn" data-mood="🥱" style="background:none; border:none; font-size: 38px; cursor:pointer;">🥱</button>
-            <button class="mood-btn" data-mood="🥺" style="background:none; border:none; font-size: 38px; cursor:pointer;">🥺</button>
+    
+    <!-- 1. AURA DAILY QUESTION MODAL -->
+    <div id="aura-modal" class="custom-modal" style="text-align: center; max-width: 320px; z-index: 3100; padding: 30px 20px;">
+        <div style="margin-bottom: 15px; color: var(--text-color);">
+            <svg style="width:40px; height:40px; stroke-width: 1.5; fill: none; stroke: currentColor;" viewBox="0 0 24 24"><path d="M12 2l2.4 7.6 7.6 2.4-7.6 2.4L12 22l-2.4-7.6-7.6-2.4 7.6-2.4L12 2z"/></svg>
+        </div>
+        <h3 style="margin-top: 0; margin-bottom: 10px; color: var(--text-color); font-size: 20px;" data-i18n="aura-ask">What is your aura today?</h3>
+        <p style="color: var(--completed-text); font-size: 14px; margin-bottom: 25px;" data-i18n="aura-desc">Pick the color that matches your energy.</p>
+        <div style="display: flex; justify-content: space-between; gap: 10px; margin-bottom: 10px; padding: 0 10px;">
+            <button class="aura-btn" data-aura="gold" style="background:#FFD700; width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--border-color); cursor:pointer; box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3);"></button>
+            <button class="aura-btn" data-aura="peach" style="background:#FFDAB9; width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--border-color); cursor:pointer; box-shadow: 0 4px 8px rgba(255, 218, 185, 0.3);"></button>
+            <button class="aura-btn" data-aura="lavender" style="background:#E6E6FA; width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--border-color); cursor:pointer; box-shadow: 0 4px 8px rgba(230, 230, 250, 0.3);"></button>
+            <button class="aura-btn" data-aura="blue" style="background:#ADD8E6; width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--border-color); cursor:pointer; box-shadow: 0 4px 8px rgba(173, 216, 230, 0.3);"></button>
+            <button class="aura-btn" data-aura="green" style="background:#98FB98; width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--border-color); cursor:pointer; box-shadow: 0 4px 8px rgba(152, 251, 152, 0.3);"></button>
+        </div>
+    </div>
+    
+    <!-- 2. SAVE AURA (BREATHING EFFECT) MODAL -->
+    <div id="save-aura-modal" class="custom-modal" style="text-align: center; max-width: 320px; z-index: 3150; padding: 40px 20px;">
+        <div id="save-aura-glow" style="width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 25px; box-shadow: 0 0 25px currentColor; background: currentColor; opacity: 0.8;"></div>
+        <h3 id="save-aura-title" style="margin-top: 0; margin-bottom: 10px; color: var(--text-color); font-size: 22px;">Aura Color</h3>
+        <p id="save-aura-desc" style="color: var(--completed-text); font-size: 14px; margin-bottom: 30px; line-height: 1.5;"></p>
+        <button id="confirm-aura-btn" class="auth-btn" style="background-color: var(--primary-btn); border-radius: 30px; width: 100%; padding: 12px; font-size: 15px;">Keep This Energy</button>
+    </div>
+    
+    <!-- 3. READ AURA: COLOR PICKER -->
+    <div id="read-aura-color-modal" class="custom-modal" style="text-align: center; max-width: 320px; z-index: 3100; padding: 30px 20px; background-color: #fdfbf7; background-image: radial-gradient(#d7d7d7 1.5px, transparent 1.5px); background-size: 20px 20px; border: 2px solid #eaeaea;">
+        <h3 style="margin-top: 0; margin-bottom: 10px; color: #444; font-family: 'Caveat', cursive; font-size: 32px; font-weight: 700;">Pick an Aura</h3>
+        <p style="color: #777; font-size: 14px; margin-bottom: 25px;">Select a color to open your message...</p>
+        <div style="display: flex; justify-content: space-between; gap: 10px; margin-bottom: 15px; padding: 0 10px;">
+            <button class="read-aura-star-btn" data-color="gold" style="background:#FFD700; width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; cursor:pointer; box-shadow: 0 4px 10px rgba(255, 215, 0, 0.4); display: flex; justify-content: center; align-items: center; color: white;">
+                <svg style="width:16px; height:16px; stroke:white; stroke-width:3; fill:none;" viewBox="0 0 24 24"><path d="M12 2l2.4 7.6 7.6 2.4-7.6 2.4L12 22l-2.4-7.6-7.6-2.4 7.6-2.4L12 2z"/></svg>
+            </button>
+            <button class="read-aura-star-btn" data-color="peach" style="background:#FFDAB9; width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; cursor:pointer; box-shadow: 0 4px 10px rgba(255, 218, 185, 0.4); display: flex; justify-content: center; align-items: center; color: white;">
+                <svg style="width:16px; height:16px; stroke:white; stroke-width:3; fill:none;" viewBox="0 0 24 24"><path d="M12 2l2.4 7.6 7.6 2.4-7.6 2.4L12 22l-2.4-7.6-7.6-2.4 7.6-2.4L12 2z"/></svg>
+            </button>
+            <button class="read-aura-star-btn" data-color="lavender" style="background:#E6E6FA; width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; cursor:pointer; box-shadow: 0 4px 10px rgba(230, 230, 250, 0.4); display: flex; justify-content: center; align-items: center; color: white;">
+                <svg style="width:16px; height:16px; stroke:white; stroke-width:3; fill:none;" viewBox="0 0 24 24"><path d="M12 2l2.4 7.6 7.6 2.4-7.6 2.4L12 22l-2.4-7.6-7.6-2.4 7.6-2.4L12 2z"/></svg>
+            </button>
+            <button class="read-aura-star-btn" data-color="blue" style="background:#ADD8E6; width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; cursor:pointer; box-shadow: 0 4px 10px rgba(173, 216, 230, 0.4); display: flex; justify-content: center; align-items: center; color: white;">
+                <svg style="width:16px; height:16px; stroke:white; stroke-width:3; fill:none;" viewBox="0 0 24 24"><path d="M12 2l2.4 7.6 7.6 2.4-7.6 2.4L12 22l-2.4-7.6-7.6-2.4 7.6-2.4L12 2z"/></svg>
+            </button>
+            <button class="read-aura-star-btn" data-color="green" style="background:#98FB98; width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; cursor:pointer; box-shadow: 0 4px 10px rgba(152, 251, 152, 0.4); display: flex; justify-content: center; align-items: center; color: white;">
+                <svg style="width:16px; height:16px; stroke:white; stroke-width:3; fill:none;" viewBox="0 0 24 24"><path d="M12 2l2.4 7.6 7.6 2.4-7.6 2.4L12 22l-2.4-7.6-7.6-2.4 7.6-2.4L12 2z"/></svg>
+            </button>
+        </div>
+        <button id="close-read-color-btn" style="background: none; border: none; color: #999; cursor: pointer; text-decoration: underline; font-size: 13px; font-weight: bold;">Close</button>
+    </div>
+    
+    <!-- 4. READ AURA: ENVELOPE -->
+    <div id="read-aura-envelope-modal" class="custom-modal" style="text-align: center; max-width: 320px; z-index: 3200; padding: 40px 20px; background: transparent; box-shadow: none; border: none;">
+        <div id="envelope-container" style="cursor: pointer; position: relative; margin: 0 auto; width: 160px; height: 110px; transition: transform 0.3s;">
+            <div id="envelope-body" style="width: 100%; height: 100%; border-radius: 8px; position: relative; box-shadow: 0 15px 25px rgba(0,0,0,0.15); display: flex; justify-content: center; align-items: center;">
+                <div id="envelope-flap" style="position: absolute; top: 0; left: 0; width: 0; height: 0; transform-origin: top; transition: transform 0.6s ease-in-out;"></div>
+                <svg id="envelope-flower" style="width: 35px; height: 35px; z-index: 5; pointer-events: none; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); color: white; stroke-width: 1.5; fill: none; stroke: currentColor;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v8M9 10l6 4M15 10l-6 4"></path></svg>
+            </div>
+        </div>
+        <p style="color: white; font-weight: bold; margin-top: 30px; text-shadow: 0 2px 5px rgba(0,0,0,0.6); font-size: 16px;">Tap to open...</p>
+    </div>
+    
+    <!-- 5. READ AURA: THE LETTER -->
+    <div id="read-aura-letter-modal" class="custom-modal" style="text-align: left; max-width: 320px; z-index: 3300; padding: 30px 30px 25px 30px; background-color: #fdfbf7; box-shadow: 0 15px 35px rgba(0,0,0,0.2); border-radius: 4px; background-image: repeating-linear-gradient(transparent, transparent 29px, #e0e0e0 29px, #e0e0e0 30px);">
+        <div style="font-family: 'Dancing Script', cursive; font-size: 24px; color: #111; font-weight: 600; line-height: 30px; padding-top: 4px;">
+            To the beautiful soul reading this,<br><br>
+            <span id="aura-letter-content" style="color: #000;">You are capable of amazing things. Trust your journey.</span><br><br>
+            ~ Yours, Boo
+        </div>
+        <div style="text-align: center; margin-top: 40px;">
+            <button id="close-letter-btn" style="background: var(--primary-btn); color: white; border: none; padding: 12px 25px; border-radius: 30px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px var(--shadow-color); font-size: 14px; display: inline-flex; align-items: center; gap: 8px;">
+                Keep in heart 
+                <svg class="svg-icon" style="margin:0; width:16px; height:16px;" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            </button>
         </div>
     </div>
 
+    <!-- STANDARD BOO MODALS -->
     <div id="booboo-alert" class="custom-modal" style="text-align: center; max-width: 250px; z-index: 3000;">
-        <div style="font-size: 35px; margin-bottom: 5px; filter: drop-shadow(0px 4px 5px rgba(0,0,0,0.1));">👾</div>
-        <h3 style="margin-top: 0; margin-bottom: 8px; font-size: 18px; color: var(--text-color);" data-i18n="booboo-says">Boo Boo says:</h3>
+        <div style="margin-bottom: 10px; color: var(--text-color);">
+            <svg class="svg-icon" style="width:40px; height:40px; margin:0;" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12v9.5c0 .83.67 1.5 1.5 1.5.4 0 .78-.16 1.06-.44L6 21.12l1.44 1.44c.59.59 1.53.59 2.12 0L11 21.12l1.44 1.44c.59.59 1.53.59 2.12 0L16 21.12l1.44 1.44c.28.28.66.44 1.06.44.83 0 1.5-.67 1.5-1.5V12c0-5.52-4.48-10-10-10zM9 10h.01M15 10h.01"/></svg>
+        </div>
+        <h3 style="margin-top: 0; margin-bottom: 8px; font-size: 18px; color: var(--text-color);" data-i18n="booboo-says">Boo says:</h3>
         <p id="booboo-alert-msg" style="color: var(--text-color); font-size: 14px; margin-bottom: 15px; line-height: 1.3; white-space: pre-wrap;"></p>
         <button id="booboo-alert-ok" class="auth-btn" style="background-color: var(--primary-btn); width: 100%; border-radius: 30px; font-size: 15px; padding: 10px;">OK</button>
     </div>
 
     <div id="booboo-confirm" class="custom-modal" style="text-align: center; max-width: 300px; z-index: 3000;">
-        <div style="font-size: 40px; margin-bottom: 5px;">👾</div>
-        <h3 style="margin-top: 0; margin-bottom: 10px; color: var(--text-color);" data-i18n="booboo-says">Boo Boo says:</h3>
+        <div style="margin-bottom: 10px; color: var(--text-color);">
+            <svg class="svg-icon" style="width:40px; height:40px; margin:0;" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12v9.5c0 .83.67 1.5 1.5 1.5.4 0 .78-.16 1.06-.44L6 21.12l1.44 1.44c.59.59 1.53.59 2.12 0L11 21.12l1.44 1.44c.59.59 1.53.59 2.12 0L16 21.12l1.44 1.44c.28.28.66.44 1.06.44.83 0 1.5-.67 1.5-1.5V12c0-5.52-4.48-10-10-10zM9 10h.01M15 10h.01"/></svg>
+        </div>
+        <h3 style="margin-top: 0; margin-bottom: 10px; color: var(--text-color);" data-i18n="booboo-says">Boo says:</h3>
         <p id="booboo-confirm-msg" style="color: var(--text-color); font-size: 14px; margin-bottom: 25px; line-height: 1.4;"></p>
         <div style="display: flex; gap: 10px;">
             <button id="booboo-confirm-cancel" class="auth-btn" style="background-color: var(--completed-text); border-radius: 30px;" data-i18n="cancel-btn">Cancel</button>
-            <button id="booboo-confirm-yes" class="auth-btn" style="background-color: #e53935; border-radius: 30px;" data-i18n="menu-signout">Sign Out</button>
+            <button id="booboo-confirm-yes" class="auth-btn" style="background-color: #e53935; border-radius: 30px;">Yes</button>
         </div>
     </div>
 
     <div id="booboo-prompt" class="custom-modal" style="text-align: center; max-width: 300px; z-index: 3000;">
-        <div style="font-size: 40px; margin-bottom: 5px;">👾</div>
-        <h3 style="margin-top: 0; margin-bottom: 10px; color: var(--text-color);" data-i18n="booboo-says">Boo Boo says:</h3>
+        <div style="margin-bottom: 10px; color: var(--text-color);">
+            <svg class="svg-icon" style="width:40px; height:40px; margin:0;" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12v9.5c0 .83.67 1.5 1.5 1.5.4 0 .78-.16 1.06-.44L6 21.12l1.44 1.44c.59.59 1.53.59 2.12 0L11 21.12l1.44 1.44c.59.59 1.53.59 2.12 0L16 21.12l1.44 1.44c.28.28.66.44 1.06.44.83 0 1.5-.67 1.5-1.5V12c0-5.52-4.48-10-10-10zM9 10h.01M15 10h.01"/></svg>
+        </div>
+        <h3 style="margin-top: 0; margin-bottom: 10px; color: var(--text-color);" data-i18n="booboo-says">Boo says:</h3>
         <p id="booboo-prompt-msg" style="color: var(--text-color); font-size: 14px; margin-bottom: 15px;"></p>
         <input type="text" id="booboo-prompt-input" style="width: 100%; box-sizing: border-box; padding: 15px; margin-bottom: 20px; border-radius: 12px; border: 2px solid var(--border-color); background: var(--input-bg); color: var(--text-color); font-size: 16px; outline: none;">
         <div style="display: flex; gap: 10px;">
@@ -108,105 +196,231 @@
         </div>
     </div>
 
-    <div id="habit-modal" class="custom-modal" style="max-width: 350px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-            <h3 style="margin: 0; color: var(--text-color);" data-i18n="habit-title">Good Habits</h3>
-            <button id="close-habit-btn" style="background:none; border:none; font-size: 20px; color: var(--completed-text); cursor:pointer;">✖</button>
-        </div>
-        <p style="font-size: 13px; color: var(--completed-text); margin-top: 0; margin-bottom: 15px;" data-i18n="habit-desc">Start building a better you today!</p>
-        <div style="display: flex; flex-direction: column; gap: 10px; max-height: 400px; overflow-y: auto; padding-right: 5px;">
-            <div class="habit-item" data-habit="💧 Drink water (0/3)" data-cat="Health"><span class="habit-icon">💧</span><span class="habit-text" data-i18n="hab-water">Drink water (3x a day)</span><span class="habit-arrow">›</span></div>
-            <div class="habit-item" data-habit="💊 Take medicine (0/2)" data-cat="Health"><span class="habit-icon">💊</span><span class="habit-text" data-i18n="hab-meds">Medication reminder</span><span class="habit-arrow">›</span></div>
-            <div class="habit-item" data-habit="🙏 Daily Prayer (0/1)" data-cat="Personal"><span class="habit-icon">🙏</span><span class="habit-text" data-i18n="hab-pray">Pray</span><span class="habit-arrow">›</span></div>
-            <div class="habit-item" data-habit="🧘‍♀️ Meditation & Yoga (0/1)" data-cat="Health"><span class="habit-icon">🧘‍♀️</span><span class="habit-text" data-i18n="hab-yoga">Meditation / Yoga</span><span class="habit-arrow">›</span></div>
-            <div class="habit-item" data-habit="🎸 Practice Instrument (0/1)" data-cat="Personal"><span class="habit-icon">🎸</span><span class="habit-text" data-i18n="hab-music">Learn an instrument</span><span class="habit-arrow">›</span></div>
-            <div class="habit-item" data-habit="🏋️ Go Exercising (0/1)" data-cat="Health"><span class="habit-icon">🏋️</span><span class="habit-text" data-i18n="hab-gym">Go exercising</span><span class="habit-arrow">›</span></div>
-            <div class="habit-item" data-habit="🛌 Early to bed (0/1)" data-cat="Health"><span class="habit-icon">🛌</span><span class="habit-text" data-i18n="hab-sleep">Go to bed early</span><span class="habit-arrow">›</span></div>
-            <div class="habit-item" data-habit="📱 Less screen time (0/1)" data-cat="Personal"><span class="habit-icon">📱</span><span class="habit-text" data-i18n="hab-phone">Less time on phone</span><span class="habit-arrow">›</span></div>
-        </div>
-    </div>
-
+    <!-- LANGUAGE MODAL -->
     <div id="language-modal" class="custom-modal">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h3 style="margin: 0; color: var(--text-color);" data-i18n="lang-select-title">Select Language</h3>
             <button id="close-lang-btn" style="background:none; border:none; font-size: 20px; color: var(--completed-text); cursor:pointer;">✖</button>
         </div>
         <div style="display: flex; flex-direction: column; gap: 10px; max-height: 400px; overflow-y: auto; padding-right: 5px;">
-            <button class="auth-btn lang-option" data-lang="en" style="background-color: var(--input-bg); color: var(--text-color); border: 2px solid var(--border-color); padding: 15px; border-radius: 12px; text-align: left;">🇬🇧 English</button>
-            <button class="auth-btn lang-option" data-lang="my" style="background-color: var(--input-bg); color: var(--text-color); border: 2px solid var(--border-color); padding: 15px; border-radius: 12px; text-align: left;">🇲🇲 မြန်မာ (Myanmar)</button>
-            <button class="auth-btn lang-option" data-lang="es" style="background-color: var(--input-bg); color: var(--text-color); border: 2px solid var(--border-color); padding: 15px; border-radius: 12px; text-align: left;">🇪🇸 Español</button>
-            <button class="auth-btn lang-option" data-lang="ko" style="background-color: var(--input-bg); color: var(--text-color); border: 2px solid var(--border-color); padding: 15px; border-radius: 12px; text-align: left;">🇰🇷 한국어 (Korean)</button>
-            <button class="auth-btn lang-option" data-lang="zh" style="background-color: var(--input-bg); color: var(--text-color); border: 2px solid var(--border-color); padding: 15px; border-radius: 12px; text-align: left;">🇨🇳 中文 (Chinese)</button>
-            <button class="auth-btn lang-option" data-lang="ja" style="background-color: var(--input-bg); color: var(--text-color); border: 2px solid var(--border-color); padding: 15px; border-radius: 12px; text-align: left;">🇯🇵 日本語 (Japanese)</button>
-            <button class="auth-btn lang-option" data-lang="th" style="background-color: var(--input-bg); color: var(--text-color); border: 2px solid var(--border-color); padding: 15px; border-radius: 12px; text-align: left;">🇹🇭 ไทย (Thai)</button>
-            <button class="auth-btn lang-option" data-lang="de" style="background-color: var(--input-bg); color: var(--text-color); border: 2px solid var(--border-color); padding: 15px; border-radius: 12px; text-align: left;">🇩🇪 Deutsch (German)</button>
-            <button class="auth-btn lang-option" data-lang="vi" style="background-color: var(--input-bg); color: var(--text-color); border: 2px solid var(--border-color); padding: 15px; border-radius: 12px; text-align: left;">🇻🇳 Tiếng Việt</button>
-            <button class="auth-btn lang-option" data-lang="hi" style="background-color: var(--input-bg); color: var(--text-color); border: 2px solid var(--border-color); padding: 15px; border-radius: 12px; text-align: left;">🇮🇳 हिन्दी (Hindi)</button>
-        </div>
-        <p data-i18n="more-lang-soon" style="text-align: center; color: var(--completed-text); font-size: 12px; margin-top: 20px; font-style: italic;">More languages will be added later...</p>
-    </div>
-
-    <div id="mark-done-modal" class="custom-modal" style="text-align: center; max-width: 320px;">
-        <p style="color: var(--completed-text); font-size: 12px; margin: 0 0 5px 0; text-align: left;" id="mark-done-date">2026/03/06</p>
-        <p style="color: var(--completed-text); font-size: 14px; margin: 0 0 15px 0; text-align: left; font-weight: bold;" id="mark-done-subtitle">Task Name Here</p>
-        <h3 style="margin: 0 0 20px 0; color: var(--text-color); text-align: left;" data-i18n="mark-status">Update Progress</h3>
-        <div id="dynamic-progress-bars" style="display: flex; gap: 8px; margin-bottom: 20px; cursor: pointer;"></div>
-        <h2 id="mark-done-times-text" style="color: var(--text-color); margin-bottom: 20px;">0 / 1 times</h2>
-        <button id="confirm-complete-btn" class="auth-btn" style="background-color: var(--primary-btn); width: 100%; border-radius: 30px; padding: 15px; font-size: 16px; margin-bottom: 10px;" data-i18n="save-progress">SAVE PROGRESS</button>
-        <button id="cancel-complete-btn" style="background: none; border: none; color: var(--completed-text); font-weight: bold; cursor: pointer; padding: 10px;" data-i18n="cancel-btn">CANCEL</button>
-    </div>
-
-    <div id="time-picker-modal" class="custom-modal" style="max-width: 270px; padding: 20px;">
-        <h3 style="margin-top: 0; margin-bottom: 10px; color: var(--text-color); font-size: 16px;" data-i18n="set-time">Set Time</h3>
-        <div style="text-align: center; margin-bottom: 15px;">
-            <span id="clock-display-hour" style="font-size: 40px; font-weight: bold; color: var(--text-color);">8</span>
-            <span style="font-size: 40px; color: var(--completed-text); margin: 0 2px;">:</span>
-            <span id="clock-display-min" style="font-size: 40px; color: var(--completed-text);">00</span>
-            <div style="display: inline-flex; flex-direction: column; vertical-align: top; margin-left: 8px; margin-top: 5px; cursor: pointer;">
-                <span id="clock-am-btn" style="font-size: 14px; font-weight: bold; color: var(--primary-btn); margin-bottom: 5px;">AM</span>
-                <span id="clock-pm-btn" style="font-size: 14px; font-weight: bold; color: var(--completed-text);">PM</span>
-            </div>
-        </div>
-        <div style="position: relative; width: 160px; height: 160px; border-radius: 50%; background-color: var(--input-bg); margin: 0 auto 20px auto;">
-            <div style="position: absolute; top: 50%; left: 50%; width: 6px; height: 6px; background: var(--primary-btn); border-radius: 50%; transform: translate(-50%, -50%); z-index: 2;"></div>
-            <div id="clock-hand" style="position: absolute; top: 50%; left: 50%; width: 60px; height: 2px; background: var(--primary-btn); transform-origin: left center; transform: translateY(-50%) rotate(150deg); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
-                <div style="position: absolute; right: -12px; top: -11px; width: 24px; height: 24px; background: var(--primary-btn); border-radius: 50%; opacity: 0.4;"></div>
-            </div>
-            <span class="clock-number" data-val="12" style="position: absolute; top: 5px; left: 50%; transform: translateX(-50%); color: var(--text-color); font-size: 12px; cursor: pointer; padding: 5px;">12</span>
-            <span class="clock-number" data-val="6" style="position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); color: var(--text-color); font-size: 12px; cursor: pointer; padding: 5px;">6</span>
-            <span class="clock-number" data-val="9" style="position: absolute; top: 50%; left: 5px; transform: translateY(-50%); color: var(--text-color); font-size: 12px; cursor: pointer; padding: 5px;">9</span>
-            <span class="clock-number" data-val="3" style="position: absolute; top: 50%; right: 5px; transform: translateY(-50%); color: var(--text-color); font-size: 12px; cursor: pointer; padding: 5px;">3</span>
-            <span class="clock-number" data-val="1" style="position: absolute; top: 15px; right: 40px; color: var(--text-color); font-size: 12px; cursor: pointer; padding: 5px;">1</span>
-            <span class="clock-number" data-val="2" style="position: absolute; top: 40px; right: 15px; color: var(--text-color); font-size: 12px; cursor: pointer; padding: 5px;">2</span>
-            <span class="clock-number" data-val="4" style="position: absolute; bottom: 40px; right: 15px; color: var(--text-color); font-size: 12px; cursor: pointer; padding: 5px;">4</span>
-            <span class="clock-number" data-val="5" style="position: absolute; bottom: 15px; right: 40px; color: var(--text-color); font-size: 12px; cursor: pointer; padding: 5px;">5</span>
-            <span class="clock-number" data-val="7" style="position: absolute; bottom: 15px; left: 40px; color: var(--text-color); font-size: 12px; cursor: pointer; padding: 5px;">7</span>
-            <span class="clock-number" data-val="8" style="position: absolute; bottom: 40px; left: 15px; color: var(--text-color); font-size: 12px; cursor: pointer; padding: 5px;">8</span>
-            <span class="clock-number" data-val="10" style="position: absolute; top: 40px; left: 15px; color: var(--text-color); font-size: 12px; cursor: pointer; padding: 5px;">10</span>
-            <span class="clock-number" data-val="11" style="position: absolute; top: 15px; left: 40px; color: var(--text-color); font-size: 12px; cursor: pointer; padding: 5px;">11</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-size: 20px; color: var(--completed-text); cursor: pointer;" onclick="booAlert('Typing times manually is coming soon!');">⌨️</span>
-            <div style="display: flex; gap: 15px;">
-                <button id="cancel-time-btn" style="background: none; border: none; color: var(--completed-text); font-weight: bold; cursor: pointer; font-size: 13px;" data-i18n="cancel-btn">CANCEL</button>
-                <button id="done-time-btn" style="background: none; border: none; color: #4285F4; font-weight: bold; cursor: pointer; font-size: 13px;">DONE</button>
-            </div>
+            <button class="auth-btn lang-option" data-lang="en" style="background-color: var(--input-bg); color: var(--text-color); border: 2px solid var(--border-color); padding: 15px; border-radius: 12px; text-align: left; display:flex; align-items:center; gap: 10px;">
+                <span style="background: var(--container-bg); padding: 2px 8px; border-radius: 6px; font-size:12px; font-weight:bold;">EN</span> English
+            </button>
+            <button class="auth-btn lang-option" data-lang="my" style="background-color: var(--input-bg); color: var(--text-color); border: 2px solid var(--border-color); padding: 15px; border-radius: 12px; text-align: left; display:flex; align-items:center; gap: 10px;">
+                <span style="background: var(--container-bg); padding: 2px 8px; border-radius: 6px; font-size:12px; font-weight:bold;">MM</span> မြန်မာ (Myanmar)
+            </button>
         </div>
     </div>
 
-    <div id="add-task-modal" class="custom-modal">
-        <h3 style="margin-top: 0; color: var(--text-color);" data-i18n="create-task-title">Create New Task</h3>
-        <input type="text" id="new-task-input" placeholder="What needs to be done?" data-i18n="task-input-ph" style="width: 100%; box-sizing: border-box; margin-bottom: 15px; padding: 15px; border-radius: 12px; border: 2px solid var(--border-color); background-color: var(--input-bg); color: var(--text-color); font-size: 16px; outline: none;">
+    <!-- DAILY PROGRESS (CHECKLIST) MODAL FOR HABITS -->
+    <div id="mark-done-modal" class="custom-modal" style="text-align: left; max-width: 320px; z-index: 3050; padding: 25px;">
+        <p style="color: var(--completed-text); font-size: 13px; margin: 0 0 5px 0; font-weight: bold;" id="mark-done-date"></p>
+        <p style="color: var(--text-color); font-size: 18px; margin: 0 0 20px 0; font-weight: bold;" id="mark-done-subtitle">Task Name Here</p>
+        
+        <h3 style="margin: 0 0 15px 0; color: var(--text-color); font-size: 15px; display: flex; justify-content: space-between; align-items: center;">
+            <span data-i18n="mark-status">Update Progress</span>
+            <span id="mark-done-times-text" style="color: var(--primary-btn); font-size: 14px;">0 / 1 times</span>
+        </h3>
+        
+        <div id="mark-done-checklist" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; max-height: 220px; overflow-y: auto; padding-right: 5px;">
+            <!-- JS will generate checkboxes here -->
+        </div>
+        
+        <button id="confirm-complete-btn" class="auth-btn" style="background-color: var(--primary-btn); width: 100%; border-radius: 30px; padding: 15px; font-size: 15px; margin-bottom: 12px; box-shadow: 0 4px 10px var(--shadow-color);" data-i18n="save-progress">SAVE PROGRESS</button>
+        <button id="cancel-complete-btn" style="background: none; border: none; color: var(--completed-text); font-weight: bold; cursor: pointer; padding: 10px; width: 100%;" data-i18n="cancel-btn">CANCEL</button>
+    </div>
+
+    <!-- TIME PICKER MODAL (SEGMENTED AM/PM) -->
+    <div id="time-picker-modal" class="custom-modal" style="max-width: 270px; padding: 20px; z-index: 3050;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="margin: 0; color: var(--text-color); font-size: 16px;" data-i18n="set-time">Set Time</h3>
+        </div>
+        
+        <div style="text-align: center; margin-bottom: 25px; display: flex; align-items: center; justify-content: center;">
+            <span id="clock-display-hour" style="font-size: 44px; font-weight: bold; color: var(--text-color);">8</span>
+            <span style="font-size: 44px; color: var(--completed-text); margin: 0 5px; position: relative; top: -3px;">:</span>
+            <span id="clock-display-min" style="font-size: 44px; color: var(--completed-text);">00</span>
+            
+            <div style="display: inline-flex; flex-direction: column; background: var(--input-bg); border: 2px solid var(--border-color); border-radius: 12px; overflow: hidden; margin-left: 15px;">
+                <div id="clock-am-btn" style="padding: 8px 12px; font-size: 14px; font-weight: bold; cursor: pointer; background: var(--primary-btn); color: white; border-bottom: 1px solid var(--border-color);">AM</div>
+                <div id="clock-pm-btn" style="padding: 8px 12px; font-size: 14px; font-weight: bold; cursor: pointer; background: transparent; color: var(--completed-text);">PM</div>
+            </div>
+        </div>
+        
+        <div style="position: relative; width: 180px; height: 180px; border-radius: 50%; background-color: var(--input-bg); margin: 0 auto 30px auto; border: 2px solid var(--container-bg);">
+            <div style="position: absolute; top: 50%; left: 50%; width: 8px; height: 8px; background: var(--primary-btn); border-radius: 50%; transform: translate(-50%, -50%); z-index: 2;"></div>
+            <div id="clock-hand" style="position: absolute; top: 50%; left: 50%; width: 65px; height: 3px; background: var(--primary-btn); transform-origin: left center; transform: translateY(-50%) rotate(150deg); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                <div style="position: absolute; right: -14px; top: -13px; width: 28px; height: 28px; background: var(--primary-btn); border-radius: 50%; opacity: 0.4;"></div>
+            </div>
+            <span class="clock-number" data-val="12" style="position: absolute; top: 5px; left: 50%; transform: translateX(-50%); color: var(--text-color); font-size: 14px; font-weight: bold; cursor: pointer; padding: 8px;">12</span>
+            <span class="clock-number" data-val="6" style="position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); color: var(--text-color); font-size: 14px; font-weight: bold; cursor: pointer; padding: 8px;">6</span>
+            <span class="clock-number" data-val="9" style="position: absolute; top: 50%; left: 5px; transform: translateY(-50%); color: var(--text-color); font-size: 14px; font-weight: bold; cursor: pointer; padding: 8px;">9</span>
+            <span class="clock-number" data-val="3" style="position: absolute; top: 50%; right: 5px; transform: translateY(-50%); color: var(--text-color); font-size: 14px; font-weight: bold; cursor: pointer; padding: 8px;">3</span>
+            <span class="clock-number" data-val="1" style="position: absolute; top: 18px; right: 45px; color: var(--text-color); font-size: 13px; cursor: pointer; padding: 5px;">1</span>
+            <span class="clock-number" data-val="2" style="position: absolute; top: 45px; right: 18px; color: var(--text-color); font-size: 13px; cursor: pointer; padding: 5px;">2</span>
+            <span class="clock-number" data-val="4" style="position: absolute; bottom: 45px; right: 18px; color: var(--text-color); font-size: 13px; cursor: pointer; padding: 5px;">4</span>
+            <span class="clock-number" data-val="5" style="position: absolute; bottom: 18px; right: 45px; color: var(--text-color); font-size: 13px; cursor: pointer; padding: 5px;">5</span>
+            <span class="clock-number" data-val="7" style="position: absolute; bottom: 18px; left: 45px; color: var(--text-color); font-size: 13px; cursor: pointer; padding: 5px;">7</span>
+            <span class="clock-number" data-val="8" style="position: absolute; bottom: 45px; left: 18px; color: var(--text-color); font-size: 13px; cursor: pointer; padding: 5px;">8</span>
+            <span class="clock-number" data-val="10" style="position: absolute; top: 45px; left: 18px; color: var(--text-color); font-size: 13px; cursor: pointer; padding: 5px;">10</span>
+            <span class="clock-number" data-val="11" style="position: absolute; top: 18px; left: 45px; color: var(--text-color); font-size: 13px; cursor: pointer; padding: 5px;">11</span>
+        </div>
+        
+        <div style="display: flex; justify-content: flex-end; gap: 15px;">
+            <button id="cancel-time-btn" style="background: none; border: none; color: var(--completed-text); font-weight: bold; cursor: pointer; font-size: 14px;" data-i18n="cancel-btn">CANCEL</button>
+            <button id="done-time-btn" style="background: none; border: none; color: #4285F4; font-weight: bold; cursor: pointer; font-size: 14px;">DONE</button>
+        </div>
+    </div>
+
+    <!-- HABIT LIST MODAL (RESTORED BIG MODAL) -->
+    <div id="habit-modal" class="custom-modal" style="padding: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3 style="margin: 0; color: var(--text-color);" data-i18n="habit-title">Good Habits</h3>
+            <button id="close-habit-btn" style="background:none; border:none; font-size: 20px; color: var(--completed-text); cursor:pointer;">✖</button>
+        </div>
+        <p style="color: var(--primary-btn); font-size: 14px; margin-top: 0; margin-bottom: 20px;" data-i18n="habit-desc">Start building a better you today!</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px; max-height: 350px; overflow-y: auto; padding-right: 5px;">
+            
+            <!-- Drink Water (Clear Glass with water) -->
+            <div class="habit-item" data-habit="Drink water">
+                <svg class="svg-icon" style="width:24px; height:24px; color: #42a5f5;" viewBox="0 0 24 24">
+                    <path d="M7 22h10l1.5-18H5.5L7 22z"></path>
+                    <path d="M6.2 11c2-1 4 1 5.8 0s3.8-1 5.8 0"></path>
+                </svg>
+                <span class="habit-text" data-i18n="hab-water">Drink water</span>
+                <span style="color: var(--completed-text);">›</span>
+            </div>
+               <!-- Take Medicine (Medicine Bottle with Cross) -->
+            <div class="habit-item" data-habit="Take medicine">
+                <svg class="svg-icon" style="width:24px; height:24px; color: #81D4FA;" viewBox="0 0 24 24">
+                    <rect x="7" y="7" width="10" height="14" rx="2"></rect>
+                    <path d="M9 7V4h6v3"></path>
+                    <line x1="7" y1="10" x2="17" y2="10"></line>
+                    <!-- Cross -->
+                    <line x1="12" y1="13" x2="12" y2="17"></line>
+                    <line x1="10" y1="15" x2="14" y2="15"></line>
+                </svg>
+                <span class="habit-text" data-i18n="hab-meds">Medication reminder</span>
+                <span style="color: var(--completed-text);">›</span>
+            </div>
+
+            
+            <!-- Pray (Peaceful Candle) -->
+            <div class="habit-item" data-habit="Pray">
+                <svg class="svg-icon" style="width:24px; height:24px; color: #ab47bc;" viewBox="0 0 24 24">
+                    <rect x="9" y="10" width="6" height="11" rx="1"></rect>
+                    <path d="M12 10c0 0-3-3-3-5s1.5-3 3-3 3 1 3 3-3 5-3 5z" fill="currentColor" stroke="none"></path>
+                    <line x1="7" y1="21" x2="17" y2="21"></line>
+                </svg>
+                <span class="habit-text" data-i18n="hab-pray">Pray</span>
+                <span style="color: var(--completed-text);">›</span>
+            </div>
+
+            
+            <!-- Meditation / Yoga (Lotus Flower) -->
+            <div class="habit-item" data-habit="Meditation">
+                <svg class="svg-icon" style="width:24px; height:24px; color: #66bb6a;" viewBox="0 0 24 24">
+                    <path d="M12 22c-4 0-4-8-4-8s4 2 4 8z"></path>
+                    <path d="M12 22c4 0 4-8 4-8s-4 2-4 8z"></path>
+                    <path d="M12 22s-4-3-7-7a3.5 3.5 0 0 1 5-6c1 2 2 4 2 4"></path>
+                    <path d="M12 22s4-3 7-7a3.5 3.5 0 0 0-5-6c-1 2-2 4-2 4"></path>
+                </svg>
+                <span class="habit-text" data-i18n="hab-yoga">Meditation / Yoga</span>
+                <span style="color: var(--completed-text);">›</span>
+            </div>
+            
+            <!-- Learn an instrument (Headphone with Music Note) -->
+            <div class="habit-item" data-habit="Learn an instrument">
+                <svg class="svg-icon" style="width:24px; height:24px; color: #212121;" viewBox="0 0 24 24">
+                    <path d="M4 14V9a8 8 0 0 1 16 0v5"></path>
+                    <rect x="2" y="13" width="4" height="7" rx="2"></rect>
+                    <rect x="18" y="13" width="4" height="7" rx="2"></rect>
+                    <circle cx="10" cy="16" r="1.5"></circle>
+                    <circle cx="14" cy="15" r="1.5"></circle>
+                    <path d="M11.5 16v-6l4-1v6"></path>
+                </svg>
+                <span class="habit-text" data-i18n="hab-music">Learn an instrument</span>
+                <span style="color: var(--completed-text);">›</span>
+            </div>
+            
+            <!-- Go exercising (Dumbbell) -->
+            <div class="habit-item" data-habit="Go exercising">
+                <svg class="svg-icon" style="width:24px; height:24px; color: #F48FB1;" viewBox="0 0 24 24">
+                    <line x1="6" y1="12" x2="18" y2="12"></line>
+                    <line x1="6" y1="5" x2="6" y2="19"></line>
+                    <line x1="18" y1="5" x2="18" y2="19"></line>
+                    <rect x="3" y="8" width="3" height="8" rx="1"></rect>
+                    <rect x="18" y="8" width="3" height="8" rx="1"></rect>
+                </svg>
+                <span class="habit-text" data-i18n="hab-gym">Go exercising</span>
+                <span style="color: var(--completed-text);">›</span>
+            </div>
+            
+            <!-- Go to bed early (Bed) -->
+            <div class="habit-item" data-habit="Go to bed early">
+                <svg class="svg-icon" style="width:24px; height:24px; color: #5c6bc0;" viewBox="0 0 24 24">
+                    <path d="M2 4v16"></path>
+                    <path d="M22 12v8"></path>
+                    <path d="M2 17h20"></path>
+                    <path d="M6 8h9a4 4 0 0 1 4 4v5"></path>
+                </svg>
+                <span class="habit-text" data-i18n="hab-sleep">Go to bed early</span>
+                <span style="color: var(--completed-text);">›</span>
+            </div>
+            
+            <!-- Less time on phone (Phone with clock/timer) -->
+            <div class="habit-item" data-habit="Less time on phone">
+                <svg class="svg-icon" style="width:24px; height:24px; color: #8d6e63;" viewBox="0 0 24 24">
+                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                    <path d="M12 18h.01"></path>
+                    <path d="M12 7v5l2 2"></path>
+                </svg>
+                <span class="habit-text" data-i18n="hab-phone">Less time on phone</span>
+                <span style="color: var(--completed-text);">›</span>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- QUICK ADD TASK MODAL (NORMAL TASK WITH EMAIL TAGS) -->
+    <div id="add-task-modal" class="custom-modal" style="padding: 20px;">
+        <h3 style="margin-top: 0; margin-bottom: 20px; color: var(--text-color);" data-i18n="create-task-title">Create New Task</h3>
+
+        <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 10px; scrollbar-width: none;">
+            <button class="habit-pill-btn" data-task="Drink water" style="background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 15px; padding: 6px 12px; font-size: 12px; white-space: nowrap; cursor: pointer; font-weight: bold; display: flex; align-items: center;">
+                <svg class="svg-icon" style="width:14px; height:14px; margin-right:4px;" viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg> Water
+            </button>
+            <button class="habit-pill-btn" data-task="Take medicine" style="background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 15px; padding: 6px 12px; font-size: 12px; white-space: nowrap; cursor: pointer; font-weight: bold; display: flex; align-items: center;">
+                <svg class="svg-icon" style="width:14px; height:14px; margin-right:4px;" viewBox="0 0 24 24"><path d="M14 2L2 14v8h8L22 10 14 2Z"/><path d="m8 16 4-4"/><path d="m14 10 2-2"/></svg> Medicine
+            </button>
+            <button class="habit-pill-btn" data-task="Meditation" style="background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 15px; padding: 6px 12px; font-size: 12px; white-space: nowrap; cursor: pointer; font-weight: bold; display: flex; align-items: center;">
+                <svg class="svg-icon" style="width:14px; height:14px; margin-right:4px;" viewBox="0 0 24 24"><path d="M12 22c4.97 0 9-4.03 9-9-4.97 0-9 4.03-9 9z"/><path d="M12 13c-3.87 0-7-3.13-7-7 3.87 0 7 3.13 7 7z"/><path d="M12 13V2"/></svg> Meditate
+            </button>
+            <button class="habit-pill-btn" data-task="Go exercising" style="background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 15px; padding: 6px 12px; font-size: 12px; white-space: nowrap; cursor: pointer; font-weight: bold; display: flex; align-items: center;">
+                <svg class="svg-icon" style="width:14px; height:14px; margin-right:4px;" viewBox="0 0 24 24"><path d="M18 10h-3V6a2 2 0 0 0-4 0v4H8a2 2 0 0 0 0 4h3v4a2 2 0 0 0 4 0v-4h3a2 2 0 0 0 0-4z"/></svg> Exercise
+            </button>
+        </div>
+
+        <input type="text" id="new-task-input" data-i18n="task-input-ph" style="width: 100%; box-sizing: border-box; margin-bottom: 15px; padding: 15px; border-radius: 12px; border: 2px solid var(--border-color); background-color: var(--input-bg); color: var(--text-color); font-size: 16px; outline: none;">
+        
         <p style="margin: 0 0 5px 5px; font-size: 12px; color: var(--completed-text); font-weight: bold;" data-i18n="save-to-cat">Save to Category:</p>
         <select id="new-task-category" style="width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 12px; border: 2px solid var(--border-color); background-color: var(--input-bg); color: var(--text-color); font-size: 16px; outline: none; appearance: auto;"></select>
+        
         <p style="margin: 0 0 5px 5px; font-size: 12px; color: var(--completed-text); font-weight: bold;" data-i18n="save-to-date">Due Date:</p>
-        <input type="date" id="new-task-date" style="width: 100%; box-sizing: border-box; margin-bottom: 20px; padding: 12px; border-radius: 12px; border: 2px solid var(--border-color); background-color: var(--input-bg); color: var(--text-color); font-size: 16px; outline: none; font-family: inherit;">
+        <input type="date" id="new-task-date" style="width: 100%; box-sizing: border-box; margin-bottom: 15px; padding: 12px; border-radius: 12px; border: 2px solid var(--border-color); background-color: var(--input-bg); color: var(--text-color); font-size: 16px; outline: none; font-family: inherit;">
+
+        <!-- NEW: EMAIL INVITATION INPUT -->
+        <p style="margin: 0 0 5px 5px; font-size: 12px; color: var(--completed-text); font-weight: bold;" data-i18n="tag-friends">Tag Friends (Emails):</p>
+        <input type="text" id="new-task-emails" placeholder="friend1@gmail.com, friend2@gmail.com" style="width: 100%; box-sizing: border-box; margin-bottom: 20px; padding: 12px; border-radius: 12px; border: 2px solid var(--border-color); background-color: var(--input-bg); color: var(--text-color); font-size: 14px; outline: none;">
+
         <div style="display: flex; justify-content: flex-end; gap: 10px;">
             <button id="cancel-task-btn" class="auth-btn" style="background-color: var(--completed-text); border-radius: 30px;" data-i18n="cancel-btn">Cancel</button>
             <button id="add-task-btn" class="auth-btn" style="background-color: var(--primary-btn); border-radius: 30px;" data-i18n="add-task-btn">Add Task</button>
         </div>
     </div>
 
+    <!-- MAIN APP CONTAINER -->
     <div class="todo-container">
         
         <div class="app-header">
@@ -215,57 +429,77 @@
                 <div style="width: 5px; height: 5px; background-color: var(--text-color); border-radius: 50%; pointer-events: none;"></div>
                 <div style="width: 5px; height: 5px; background-color: var(--text-color); border-radius: 50%; pointer-events: none;"></div>
             </button>
-            <h1>Boo Boo Do</h1>
-            <button id="theme-toggle">🌙</button>
+            <h1 style="display: flex; align-items: center; gap: 8px;">
+                <svg class="svg-icon" style="margin:0; width: 28px; height: 28px;" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12v9.5c0 .83.67 1.5 1.5 1.5.4 0 .78-.16 1.06-.44L6 21.12l1.44 1.44c.59.59 1.53.59 2.12 0L11 21.12l1.44 1.44c.59.59 1.53.59 2.12 0L16 21.12l1.44 1.44c.28.28.66.44 1.06.44.83 0 1.5-.67 1.5-1.5V12c0-5.52-4.48-10-10-10zM9 10h.01M15 10h.01"/></svg> 
+                Boo
+            </h1>
+            <button id="theme-toggle">
+                <svg class="svg-icon" style="margin:0; width:24px; height:24px; color: var(--text-color);" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            </button>
         </div>
         
+        <!-- TASKS SCREEN -->
         <div id="tasks-screen" class="app-screen">
             <div class="category-filters" id="category-filters"></div>
-            <button id="open-habit-btn" class="cat-pill" style="background-color: var(--primary-btn); color: white; border: none; margin-bottom: 15px; width: 100%; display: flex; justify-content: space-between; box-shadow: 0 4px 10px var(--shadow-color);">
+            <!-- BUTTON OPENS HABIT MODAL WITH SVGS -->
+            <button id="open-habit-list-btn" class="cat-pill" style="background-color: var(--primary-btn); color: white; border: none; margin-bottom: 15px; width: 100%; display: flex; justify-content: space-between; box-shadow: 0 4px 10px var(--shadow-color);">
                 <span data-i18n="habit-btn">Let us start with some good habits?</span><span>›</span>
             </button>
             <button id="fab-add-task" class="fab-btn">＋</button>
             <ul id="task-list"></ul>
         </div>
 
+        <!-- CALENDAR SCREEN (RESIZED) -->
         <div id="calendar-screen" class="app-screen" style="display: none;">
             <button id="calendar-fab" class="fab-btn">＋</button>
-            <div class="calendar-header">
-                <button id="prev-month" class="icon-btn">◀</button>
-                <h2 id="month-year" class="section-title" style="margin:0;">Month Year</h2>
-                <button id="next-month" class="icon-btn">▶</button>
+            <div style="max-width: 300px; margin: 0 auto;">
+                <div class="calendar-header">
+                    <button id="prev-month" class="icon-btn">◀</button>
+                    <h2 id="month-year" class="section-title" style="margin:0;">Month Year</h2>
+                    <button id="next-month" class="icon-btn">▶</button>
+                </div>
+                <div class="calendar-days-of-week">
+                    <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+                </div>
+                <div id="calendar-grid" class="calendar-grid"></div>
             </div>
-            <div class="calendar-days-of-week">
-                <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
-            </div>
-            <div id="calendar-grid" class="calendar-grid"></div>
             
             <div class="extra-stats-card" style="margin-top: 25px; text-align: left;">
-                <h4 style="margin-bottom: 10px;" data-i18n="tasks-for">Tasks for <span id="selected-date-text" style="color: var(--primary-btn);">Today</span></h4>
+                <h4 style="margin-bottom: 10px;">
+                    <span data-i18n="tasks-for">Tasks for </span> <span id="selected-date-text" style="color: var(--primary-btn);">Today</span>
+                </h4>
                 <div id="empty-calendar-state" style="color: var(--completed-text); font-size: 14px;" data-i18n="cal-sync-soon">Tap the + button to add an event to this date!</div>
                 <ul id="calendar-task-list" style="margin-top: 15px;"></ul>
             </div>
         </div>
 
+        <!-- PROFILE SCREEN -->
         <div id="profile-screen" class="app-screen" style="display: none;">
-            <div class="profile-header">
-                <div class="avatar">👾</div>
-                <div class="user-info">
-                    <h3>Boo Boo Do User</h3>
-                    <p data-i18n="click-login">Click to login</p>
+            
+            <div class="profile-header" style="position: relative; cursor: pointer; display: flex; align-items: center; padding: 10px; gap: 15px;">
+                <input type="file" id="profile-avatar-upload" accept="image/*" style="display: none;">
+                <div class="avatar" id="profile-avatar-display" style="background-size: cover; background-position: center; position: relative;">
+                    <svg id="profile-avatar-emoji" class="svg-icon" style="margin:0; width: 35px; height: 35px;" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12v9.5c0 .83.67 1.5 1.5 1.5.4 0 .78-.16 1.06-.44L6 21.12l1.44 1.44c.59.59 1.53.59 2.12 0L11 21.12l1.44 1.44c.59.59 1.53.59 2.12 0L16 21.12l1.44 1.44c.28.28.66.44 1.06.44.83 0 1.5-.67 1.5-1.5V12c0-5.52-4.48-10-10-10zM9 10h.01M15 10h.01"/></svg>
+                    <div class="edit-icon-badge" id="edit-avatar-btn" style="display: flex; justify-content: center; align-items: center;">
+                        <svg class="svg-icon" style="margin:0; width:12px; height:12px;" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    </div>
+                </div>
+                <div class="user-info" style="text-align: left; flex: 1;">
+                    <h3 style="display: flex; align-items: center; gap: 8px; margin: 0 0 5px 0; color: var(--text-color);">
+                        <span id="profile-username-display">Boo User</span> 
+                        <span id="edit-name-icon" style="font-size: 14px; cursor: pointer; padding: 5px;">
+                            <svg class="svg-icon" style="margin:0; width:14px; height:14px;" viewBox="0 0 24 24"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                        </span>
+                    </h3>
+                    <p data-i18n="click-login" style="margin: 0; color: var(--completed-text); font-size: 14px;">Tap avatar to customize</p>
                 </div>
             </div>
 
-            <div class="extra-stats-card" style="margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; padding: 15px 25px;">
-                <div>
-                    <h4 style="margin: 0 0 5px 0; color: var(--text-color);" data-i18n="today-mood">Today's Mood</h4>
-                    <p style="margin: 0; color: var(--completed-text); font-size: 13px;" data-i18n="mood-logged">You are doing your best!</p>
-                </div>
-                <div id="profile-mood-display" style="font-size: 45px; filter: drop-shadow(0px 4px 5px rgba(0,0,0,0.1));">☁️</div>
-            </div>
-
-            <div class="google-buttons" style="margin-bottom: 30px;">
-                <button id="authorize_button" class="auth-btn" data-i18n="connect-cal">📅 Connect Google Calendar</button>
+            <div class="google-buttons" style="margin-bottom: 25px;">
+                <button id="authorize_button" class="auth-btn" style="display: flex; align-items: center; justify-content: center;">
+                    <svg class="svg-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <span data-i18n="connect-cal">Connect Google Calendar</span>
+                </button>
                 <button id="signout_button" class="auth-btn" style="display: none;">Sign Out</button>
             </div>
 
@@ -274,119 +508,131 @@
                 <div class="stat-card"><h2 id="completed-count">0</h2><p data-i18n="completed-tasks">Completed Tasks</p></div>
                 <div class="stat-card"><h2 id="pending-count">0</h2><p data-i18n="pending-tasks">Pending Tasks</p></div>
             </div>
-            <div class="extra-stats-card" style="margin-bottom: 15px;">
+            
+            <div class="extra-stats-card" style="margin-bottom: 25px;">
                 <h4 data-i18n="next-7-days">Tasks in Next 7 Days</h4>
-                <p style="color: var(--completed-text); font-size: 14px;" data-i18n="cal-sync-soon">Calendar feature coming soon...</p>
+                <div id="next-7-days-list" style="margin-top: 15px; display: flex; flex-direction: column; gap: 8px;">
+                    <p style="color: var(--completed-text); font-size: 14px;" data-i18n="cal-sync-soon">Calculating...</p>
+                </div>
             </div>
-            <div class="extra-stats-card" style="text-align: center;">
-                <h4 style="margin-bottom: 5px;" data-i18n="community-title">🌍 Boo Boo Do Community</h4>
-                <h2 style="color: var(--primary-btn); font-size: 32px; margin: 10px 0;">...</h2>
-                <p style="color: var(--completed-text); font-size: 14px; margin: 0;" data-i18n="community-desc">Happy users organizing their lives!</p>
+
+            <!-- MASON JAR AT THE BOTTOM (NEW NATURAL SVG TWINE BOW) -->
+            <div class="extra-stats-card mood-bottle-card" style="width: 100%; box-sizing: border-box;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                    <div style="text-align: left;">
+                        <h4 style="margin: 0 0 5px 0; color: var(--text-color); display: flex; align-items: center;">
+                            Aura Jar <svg class="svg-icon" style="margin-left: 6px; width: 16px; height: 16px; color: #FFD700;" viewBox="0 0 24 24"><path d="M12 2l2.4 7.6 7.6 2.4-7.6 2.4L12 22l-2.4-7.6-7.6-2.4 7.6-2.4L12 2z"/></svg>
+                        </h4>
+                        <p style="margin: 0; color: var(--completed-text); font-size: 12px;">Collecting your stars (<span id="bottle-count">0</span>)</p>
+                    </div>
+                    <button id="open-read-aura-btn" style="background: var(--primary-btn); color: white; border: none; padding: 8px 12px; border-radius: 12px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px var(--shadow-color); font-size: 12px; transition: transform 0.2s; display: flex; align-items: center;">
+                        <svg class="svg-icon" style="margin:0 6px 0 0; width: 14px; height: 14px;" viewBox="0 0 24 24"><path d="M12 2l2.4 7.6 7.6 2.4-7.6 2.4L12 22l-2.4-7.6-7.6-2.4 7.6-2.4L12 2z"/></svg> Read Aura
+                    </button>
+                </div>
+                
+                <div class="weekly-mood-days">
+                    <div class="mood-day" id="aura-day-Mon">M<span>-</span></div>
+                    <div class="mood-day" id="aura-day-Tue">T<span>-</span></div>
+                    <div class="mood-day" id="aura-day-Wed">W<span>-</span></div>
+                    <div class="mood-day" id="aura-day-Thu">T<span>-</span></div>
+                    <div class="mood-day" id="aura-day-Fri">F<span>-</span></div>
+                    <div class="mood-day" id="aura-day-Sat">S<span>-</span></div>
+                    <div class="mood-day" id="aura-day-Sun">S<span>-</span></div>
+                </div>
+
+                <!-- Mason Jar Structure -->
+                <div class="bottle-container">
+                    <div class="bottle-lid"></div>
+                <div class="twine-bow"></div>
+
+
+                    <div class="bottle-body" id="bottle-body"></div>
+                </div>
             </div>
+            
         </div>
 
-        <div id="widgets-screen" class="app-screen" style="display: none;">
-            <div style="display: flex; align-items: center; margin-bottom: 20px;">
-                <button class="back-to-tasks-btn" style="background:none; border:none; font-size: 24px; color: var(--text-color); cursor:pointer; margin-right: 15px;">←</button>
-                <h2 class="section-title" style="margin: 0;" data-i18n="menu-widgets">🧩 Widgets</h2>
-            </div>
-            <p style="color: var(--completed-text); font-size: 14px; margin-bottom: 20px;">Check out our beautiful widgets to keep your tasks organized right on your home screen!</p>
-            <div style="background-color: var(--container-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 15px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
-                <div>
-                    <h4 style="margin: 0 0 5px 0; color: var(--text-color);">Daily Task</h4>
-                    <p style="margin: 0 0 10px 0; font-size: 12px; color: var(--completed-text);">Size: 4x4</p>
-                    <button class="widget-add-btn auth-btn" style="background: transparent; color: #4285F4; border: 1px solid #4285F4; border-radius: 20px; padding: 5px 20px;">ADD</button>
-                </div>
-                <div style="width: 120px; height: 80px; background: linear-gradient(to bottom, #9ab0d1 30%, #ffffff 30%); border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow: hidden; padding: 5px; font-size: 8px;">
-                    <b style="color: white;">Today</b>
-                    <div style="margin-top: 12px; color: #333;">○ Drink water</div>
-                    <div style="margin-top: 5px; color: #333;">○ Read book</div>
-                    <div style="margin-top: 5px; color: #333;">○ Exercise</div>
-                </div>
-            </div>
-            <div style="background-color: var(--container-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 15px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
-                <div>
-                    <h4 style="margin: 0 0 5px 0; color: var(--text-color);">Month</h4>
-                    <p style="margin: 0 0 10px 0; font-size: 12px; color: var(--completed-text);">Size: 4x4</p>
-                    <button class="widget-add-btn auth-btn" style="background: transparent; color: #4285F4; border: 1px solid #4285F4; border-radius: 20px; padding: 5px 20px;">ADD</button>
-                </div>
-                <div style="width: 120px; height: 80px; background: #ffffff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 5px; text-align: center; font-size: 8px; color: #333;">
-                    <b>MARCH</b>
-                    <div style="display: grid; grid-template-columns: repeat(7, 1fr); margin-top: 5px; gap: 2px;">
-                        <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
-                        <span></span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span>
-                        <span>7</span><span>8</span><span style="background: #4285F4; color: white; border-radius: 50%;">9</span><span>10</span><span>11</span><span>12</span><span>13</span>
-                    </div>
-                </div>
-            </div>
-            <div style="background-color: var(--container-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 15px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
-                <div>
-                    <h4 style="margin: 0 0 5px 0; color: var(--text-color);">Count Down</h4>
-                    <p style="margin: 0 0 10px 0; font-size: 12px; color: var(--completed-text);">Size: 4x1</p>
-                    <button class="widget-add-btn auth-btn" style="background: transparent; color: #4285F4; border: 1px solid #4285F4; border-radius: 20px; padding: 5px 20px;">ADD</button>
-                </div>
-                <div style="width: 120px; height: 40px; background: #ffffff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 5px 10px; display: flex; align-items: center; justify-content: space-between;">
-                    <div style="display: flex; align-items: center; gap: 5px;">
-                        <span style="font-size: 16px;">🎂</span>
-                        <div style="display: flex; flex-direction: column;">
-                            <span style="font-size: 8px; font-weight: bold; color: #333;">Mom's Bday</span>
-                            <span style="font-size: 6px; color: #888;">Aug 15</span>
-                        </div>
-                    </div>
-                    <b style="font-size: 12px; color: #333;">123 D</b>
-                </div>
-            </div>
-        </div>
-
+        <!-- SETTINGS SCREEN -->
         <div id="settings-screen" class="app-screen" style="display: none;">
             <div style="display: flex; align-items: center; margin-bottom: 20px;">
                 <button class="back-to-tasks-btn" style="background:none; border:none; font-size: 24px; color: var(--text-color); cursor:pointer; margin-right: 15px;">←</button>
                 <h2 class="section-title" style="margin: 0;" data-i18n="settings-title">Settings</h2>
             </div>
             <div class="settings-card">
-                <div class="setting-item"><span data-i18n="set-sync">🔄 Account Sync</span><button class="toggle-btn active">On</button></div>
-                <div class="setting-item"><span data-i18n="set-notif">🔔 Notifications</span><button class="toggle-btn active">On</button></div>
-                <div class="setting-item" id="sync-calendar-btn" style="cursor: pointer;"><span data-i18n="set-cal">📅 Sync Calendar</span><button class="action-btn" data-i18n="set-manage">Manage</button></div>
-                <div class="setting-item" id="language-btn" style="cursor: pointer;"><span data-i18n="set-lang">🗣️ Language</span><button class="action-btn" id="current-lang-display">English ></button></div>
+                <div class="setting-item" id="set-sync-btn" style="cursor:pointer;">
+                    <div style="display: flex; align-items: center;"><svg class="svg-icon" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg> <span data-i18n="set-sync">Account Sync</span></div>
+                    <button class="toggle-btn active">On</button>
+                </div>
+                <div class="setting-item" id="set-notif-btn" style="cursor:pointer;">
+                    <div style="display: flex; align-items: center;"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg> <span data-i18n="set-notif">Notifications</span></div>
+                    <button class="toggle-btn active">On</button>
+                </div>
+                <div class="setting-item" id="sync-calendar-btn-settings" style="cursor:pointer;">
+                    <div style="display: flex; align-items: center;"><svg class="svg-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> <span data-i18n="set-cal">Sync Calendar</span></div>
+                    <button class="action-btn" data-i18n="set-manage">Manage</button>
+                </div>
+                <div class="setting-item" id="language-btn" style="cursor: pointer;">
+                    <div style="display: flex; align-items: center;"><svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg> <span data-i18n="set-lang">Language</span></div>
+                    <button class="action-btn" id="current-lang-display">English ></button>
+                </div>
             </div>
             <h2 class="section-title" style="margin-top: 25px;" data-i18n="set-support">Support & About</h2>
             <div class="settings-card">
-                <div class="setting-item" id="feedback-btn" style="cursor: pointer;"><span data-i18n="set-feedback">💬 Feedback</span><button class="action-btn">></button></div>
-                <div class="setting-item" id="share-app-btn" style="cursor: pointer;"><span data-i18n="set-share">📤 Share App</span><button class="action-btn">></button></div>
-                <div class="setting-item" id="follow-us-btn" style="cursor: pointer;"><span data-i18n="set-follow">📺 Follow us</span><button class="action-btn">></button></div>
-                <div class="setting-item" id="privacy-btn" style="cursor: pointer;"><span data-i18n="set-privacy">📜 Privacy Policy</span><button class="action-btn">></button></div>
-                <div class="setting-item" id="credits-btn" style="cursor: pointer;"><span data-i18n="set-credits">🖼️ Image Credits</span><button class="action-btn">></button></div>
-                <div class="setting-item" style="border-bottom: none;"><span data-i18n="set-version">ℹ️ Version</span><span style="color: var(--completed-text); font-size: 14px;">Boo Boo Do v1.1.0</span></div>
+                <a href="mailto:nangzinzinwin04@gmail.com" class="setting-item" style="text-decoration: none; display: flex;">
+                    <div style="display: flex; align-items: center;"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> <span data-i18n="set-feedback">Feedback</span></div>
+                    <button class="action-btn">></button>
+                </a>
+                <div class="setting-item" id="share-app-btn" style="cursor: pointer;">
+                    <div style="display: flex; align-items: center;"><svg class="svg-icon" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg> <span data-i18n="set-share">Share App</span></div>
+                    <button class="action-btn">></button>
+                </div>
+                <div class="setting-item" id="follow-us-btn" style="cursor: pointer;">
+                    <div style="display: flex; align-items: center;"><svg class="svg-icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg> <span data-i18n="set-follow">Follow us</span></div>
+                    <button class="action-btn">></button>
+                </div>
+                <div class="setting-item" id="privacy-btn" style="cursor: pointer;">
+                    <div style="display: flex; align-items: center;"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> <span data-i18n="set-privacy">Privacy Policy</span></div>
+                    <button class="action-btn">></button>
+                </div>
+                
+                <div class="setting-item" style="border-bottom: none;">
+                    <div style="display: flex; align-items: center;"><svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> <span data-i18n="set-version">Version</span></div>
+                    <span style="color: var(--completed-text); font-size: 14px;">Boo v2.3</span>
+                </div>
             </div>
         </div>
 
+        <!-- THEME SCREEN -->
         <div id="theme-screen" class="app-screen" style="display: none;">
             <div style="display: flex; align-items: center; margin-bottom: 20px;">
                 <button class="back-to-tasks-btn" style="background:none; border:none; font-size: 24px; color: var(--text-color); cursor:pointer; margin-right: 15px;">←</button>
-                <h2 class="section-title" style="margin: 0;" data-i18n="menu-theme">🎨 Theme</h2>
+                <h2 class="section-title" style="margin: 0;" data-i18n="menu-theme">Theme</h2>
             </div>
             
-            <p style="color: var(--text-color); font-weight: bold; margin-bottom: 10px;">Boo Boo pure color</p>
+            <p style="color: var(--text-color); font-weight: bold; margin-bottom: 10px;">Boo pure color</p>
             <div class="theme-grid-colors">
                 <div class="theme-wrapper"><button class="theme-option theme-box color-box" data-theme-choice="seasalt" style="background-color: #465b8c;"></button><div class="theme-label">Sea Salt</div></div>
                 <div class="theme-wrapper"><button class="theme-option theme-box color-box" data-theme-choice="macaron" style="background-color: #ff8fab;"></button><div class="theme-label">Lychee</div></div>
                 <div class="theme-wrapper"><button class="theme-option theme-box color-box" data-theme-choice="matcha" style="background-color: #66bb6a;"></button><div class="theme-label">Matcha</div></div>
                 <div class="theme-wrapper"><button class="theme-option theme-box color-box" data-theme-choice="coffee" style="background-color: #795548;"></button><div class="theme-label">Cocoa</div></div>
                 <div class="theme-wrapper"><button class="theme-option theme-box color-box" data-theme-choice="mono" style="background-color: #616161;"></button><div class="theme-label">Sesame</div></div>
-                <div class="theme-wrapper"><button class="theme-option theme-box color-box" data-theme-choice="dark" style="background-color: #a67cff;"></button><div class="theme-label">Nightfall</div></div>
+                <div class="theme-wrapper"><button class="theme-option theme-box color-box" data-theme-choice="dark" style="background-color: #121212; border-color: #333;"></button><div class="theme-label">Nightfall</div></div>
                 <div class="theme-wrapper"><button class="theme-option theme-box color-box" data-theme-choice="sunset" style="background-color: #ff9800;"></button><div class="theme-label">Sunset</div></div>
                 <div class="theme-wrapper"><button class="theme-option theme-box color-box" data-theme-choice="lavender" style="background-color: #7e57c2;"></button><div class="theme-label">Taro</div></div>
                 <div class="theme-wrapper"><button class="theme-option theme-box color-box" data-theme-choice="ocean" style="background-color: #00acc1;"></button><div class="theme-label">Ocean</div></div>
                 <div class="theme-wrapper"><button class="theme-option theme-box color-box" data-theme-choice="cherry" style="background-color: #ec407a;"></button><div class="theme-label">Blossom</div></div>
             </div>
+            
             <p style="color: var(--text-color); font-weight: bold; margin: 25px 0 10px 0;" data-i18n="theme-texture">Texture</p>
-            <div class="theme-grid-colors" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="theme-grid-colors">
                 <div class="theme-wrapper"><button class="theme-option theme-box color-box" data-theme-choice="texture-paper" style="background: repeating-linear-gradient(45deg, #f0f0f0, #f0f0f0 2px, #e0e0e0 2px, #e0e0e0 4px);"></button><div class="theme-label">Paper</div></div>
                 <div class="theme-wrapper"><button class="theme-option theme-box color-box" data-theme-choice="texture-grid" style="background: radial-gradient(#ccc 2px, #fff 2px); background-size: 8px 8px;"></button><div class="theme-label">Journal</div></div>
                 <div class="theme-wrapper"><button class="theme-option theme-box color-box" data-theme-choice="scenery-sunset" style="background: linear-gradient(to bottom, #ff9a9e, #fecfef);"></button><div class="theme-label">Pink Sky</div></div>
+                <div class="theme-wrapper"><button class="theme-option theme-box color-box" data-theme-choice="texture-dots" style="background: radial-gradient(#90a4ae 2px, transparent 2px); background-size: 15px 15px; background-color: #f0f4f8;"></button><div class="theme-label">Dots</div></div>
+                <div class="theme-wrapper"><button class="theme-option theme-box color-box" data-theme-choice="texture-starlight" style="background: radial-gradient(white 1px, transparent 1px); background-size: 25px 25px; background-color: #1a1a24;"></button><div class="theme-label">Starlight</div></div>
             </div>
             
-            <p style="color: var(--text-color); font-weight: bold; margin: 25px 0 10px 0;">Nature Themes 🌿</p>
+            <p style="color: var(--text-color); font-weight: bold; margin: 25px 0 10px 0;">Nature Themes</p>
             <div class="theme-grid-scenery">
                 <div class="theme-wrapper"><button class="theme-option theme-box scenery-box" data-theme-choice="theme-matcha" style="background-image: url('Img/matcha.png');"></button><div class="theme-label">Matcha Boba</div></div>
                 <div class="theme-wrapper"><button class="theme-option theme-box scenery-box" data-theme-choice="theme-sunshine" style="background-image: url('Img/sunshine.png');"></button><div class="theme-label">Sunshine</div></div>
@@ -399,96 +645,97 @@
             <p style="color: var(--text-color); font-weight: bold; margin: 25px 0 10px 0;" data-i18n="theme-gallery">Your Gallery</p>
             <div style="display: flex; gap: 15px; align-items: flex-start; margin-bottom: 50px; position: relative;">
                 <input type="file" id="custom-bg-upload" accept="image/*" style="position: absolute; left: -9999px;">
-                <button id="trigger-upload-btn" class="auth-btn" style="background-color: var(--primary-btn); border-radius: 12px; padding: 15px; flex: 1; display: flex; align-items: center; justify-content: center; font-size: 16px;" data-i18n="upload-btn">🖼️ Upload Image</button>
+                <button id="trigger-upload-btn" class="auth-btn" style="background-color: var(--primary-btn); border-radius: 12px; padding: 15px; flex: 1; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                    <svg class="svg-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                    <span data-i18n="upload-btn">Upload Image</span>
+                </button>
                 <div class="theme-wrapper" style="width: 100px;">
                     <button class="theme-option theme-box scenery-box" id="custom-bg-preview" data-theme-choice="custom-user-bg" style="display: none; width: 100px; height: 60px; margin: 0;"></button>
                 </div>
             </div>
         </div>
 
+        <!-- STARRED SCREEN -->
         <div id="starred-screen" class="app-screen" style="display: none;">
             <div style="display: flex; align-items: center; margin-bottom: 20px;">
                 <button class="back-to-tasks-btn" style="background:none; border:none; font-size: 24px; color: var(--text-color); cursor:pointer; margin-right: 15px;">←</button>
-                <h2 class="section-title" style="margin: 0;" data-i18n="menu-starred">⭐ Starred</h2>
+                <h2 class="section-title" style="margin: 0;" data-i18n="menu-starred">Starred</h2>
             </div>
             <div id="empty-starred-state" style="text-align: center; margin-top: 50px; color: var(--completed-text);">
-                <div style="font-size: 80px; margin-bottom: 15px; filter: drop-shadow(0px 4px 10px rgba(0,0,0,0.1));">🌟</div>
+                <div style="margin-bottom: 15px; color: var(--primary-btn);">
+                    <svg style="width:80px; height:80px; stroke-width: 1; fill: none; stroke: currentColor;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                </div>
                 <p style="font-size: 18px; font-weight: bold; color: var(--text-color); margin-bottom: 5px;" data-i18n="no-stars">There are no starred tasks.</p>
                 <p style="font-size: 14px;" data-i18n="star-hint">Tap the star icon on a task to save it here!</p>
             </div>
             <ul id="starred-task-list"></ul>
         </div>
 
+        <!-- HABIT / TASK DETAIL EDIT SCREEN -->
         <div id="habit-detail-screen" class="app-screen" style="display: none; padding-bottom: 30px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <button class="back-to-tasks-btn" style="background:none; border:none; font-size: 24px; color: var(--text-color); cursor:pointer;">←</button>
-                <div style="position: relative;">
-                    <button id="habit-options-btn" style="background:none; border:none; font-size: 24px; color: var(--text-color); cursor:pointer;">⋮</button>
-                    <div id="habit-options-menu" style="display: none; position: absolute; right: 0; top: 35px; background: var(--container-bg); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 4px 15px var(--shadow-color); z-index: 10; overflow: hidden; width: 170px;">
-                        <button id="detail-edit-btn" class="habit-menu-btn" style="color: var(--text-color);" data-i18n="detail-edit">Edit Settings</button>
-                        <button id="detail-delete-btn" class="habit-menu-btn" style="color: #e53935;" data-i18n="detail-delete">Delete Task</button>
-                        <button id="detail-done-btn" class="habit-menu-btn" style="color: var(--primary-btn); font-weight: bold;" data-i18n="detail-done">Mark as Done</button>
-                    </div>
+                
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <!-- MARK AS DONE BUTTON -->
+                    <button id="detail-done-btn" style="background:none; border:none; color: var(--primary-btn); font-size: 22px; cursor:pointer;" title="Mark as Done">
+                        <svg class="svg-icon" style="margin:0;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </button>
+                    <!-- DELETE BUTTON -->
+                    <button id="detail-delete-btn" style="background:none; border:none; color: #e53935; font-size: 20px; cursor:pointer;" title="Delete Task">
+                        <svg class="svg-icon" style="margin:0;" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </button>
                 </div>
             </div>
 
-            <div style="text-align: center; margin-top: 20px; margin-bottom: 30px;">
-                <div id="habit-detail-icon" style="font-size: 90px; margin-bottom: 15px; filter: drop-shadow(0px 10px 10px rgba(0,0,0,0.15));">💧</div>
-                <h2 id="habit-detail-title" style="margin: 0 0 10px 0; color: var(--text-color); font-size: 22px;">Drink water</h2>
-                <p id="habit-detail-subtitle" style="color: var(--completed-text); font-size: 14px; margin: 0;" data-i18n="detail-hint">Tap the 3 dots to manage this task.</p>
+            <div style="text-align: center; margin-top: 10px; margin-bottom: 30px;">
+                <div id="habit-detail-icon" style="color: var(--primary-btn); margin-bottom: 10px;"></div>
+                <h2 id="habit-detail-title" style="margin: 0 0 5px 0; color: var(--text-color); font-size: 22px;">Task Name</h2>
+                <p style="color: var(--completed-text); font-size: 13px; margin: 0;" data-i18n="detail-hint">Tap elements below to edit</p>
             </div>
 
-            <div id="task-stats-section">
-                <h4 style="margin-bottom: 10px; color: var(--text-color);" data-i18n="detail-stats-title">Total Completion Status</h4>
-                <div class="stats-grid">
-                    <div class="stat-card" style="background-color: var(--input-bg); box-shadow: none; border-color: transparent;"><h2 id="detail-total-stat" style="color: var(--text-color);">0</h2><p style="color: var(--completed-text);" data-i18n="detail-total">Total Day</p></div>
-                    <div class="stat-card" style="background-color: var(--input-bg); box-shadow: none; border-color: transparent;"><h2 id="detail-streak-stat" style="color: var(--text-color);">0</h2><p style="color: var(--completed-text);" data-i18n="detail-streak">Streak Day</p></div>
+            <div style="text-align: left; background-color: var(--container-bg); padding: 20px; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 4px 10px var(--shadow-color);">
+                <p style="font-weight: bold; color: var(--text-color); margin: 0 0 8px 0; font-size: 14px;">Task / Phrase</p>
+                <input type="text" id="edit-phrase-input" style="width: 100%; box-sizing: border-box; margin-bottom: 20px; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--input-bg); color: var(--text-color); font-size: 16px; outline: none;">
+
+                <p style="font-weight: bold; color: var(--text-color); margin: 0 0 8px 0; font-size: 14px;">Date</p>
+                <input type="date" id="edit-date-input" style="width: 100%; box-sizing: border-box; margin-bottom: 20px; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--input-bg); color: var(--text-color); font-size: 16px; outline: none; font-family: inherit;">
+                
+                <!-- NEW: EMAIL INVITATION INPUT IN DETAIL -->
+                <p style="font-weight: bold; color: var(--text-color); margin: 0 0 8px 0; font-size: 14px;" data-i18n="tag-friends">Tag Friends (Emails)</p>
+                <input type="text" id="edit-emails-input" placeholder="friend@gmail.com" style="width: 100%; box-sizing: border-box; margin-bottom: 10px; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--input-bg); color: var(--text-color); font-size: 14px; outline: none;">
+                <div id="friends-status-container" style="margin-bottom: 20px; font-size: 12px;"></div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <p style="font-weight: bold; color: var(--text-color); margin: 0; font-size: 14px;">Reminder at</p>
+                    <p style="font-size: 11px; color: var(--completed-text); margin: 0;">(Tap to remove)</p>
                 </div>
                 
-                <h4 style="margin-top: 30px; margin-bottom: 15px; color: var(--text-color);" data-i18n="detail-perf-cal">Performance Calendar</h4>
-                <div style="background-color: var(--container-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 15px;">
-                    <div class="calendar-header" style="margin-bottom: 10px;">
-                        <button id="detail-prev-month" class="icon-btn" style="padding: 5px;">◀</button>
-                        <h4 id="detail-month-year" style="margin:0; color: var(--text-color);">Month Year</h4>
-                        <button id="detail-next-month" class="icon-btn" style="padding: 5px;">▶</button>
-                    </div>
-                    <div class="calendar-days-of-week" style="margin-bottom: 5px;">
-                        <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
-                    </div>
-                    <div id="detail-calendar-grid" class="calendar-grid"></div>
+                <div id="reminder-time-container" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button id="add-time-btn" class="time-pill" style="font-weight: bold; font-size: 18px; padding: 5px 15px; background-color: var(--container-bg); border-style: dashed; color: var(--primary-btn); border-color: var(--primary-btn);">+</button>
                 </div>
             </div>
 
-            <div id="task-edit-section" style="display: none; text-align: left;">
-                <p style="font-weight: bold; color: var(--text-color); margin-bottom: 5px;">Reminder Phrase</p>
-                <input type="text" id="edit-phrase-input" style="width: 100%; box-sizing: border-box; margin-bottom: 25px; padding: 15px; border-radius: 12px; border: 2px solid var(--border-color); background-color: var(--input-bg); color: var(--text-color); font-size: 16px; outline: none;">
-
-                <p style="font-weight: bold; color: var(--text-color); margin-bottom: 10px;">Repeat on</p>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
-                    <button class="day-pill active">Sun</button><button class="day-pill active">Mon</button><button class="day-pill active">Tue</button><button class="day-pill active">Wed</button><button class="day-pill active">Thu</button><button class="day-pill active">Fri</button><button class="day-pill active">Sat</button>
-                </div>
-
-                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px;">
-                    <p style="font-weight: bold; color: var(--text-color); margin: 0;">Reminder at</p>
-                    <p style="font-size: 11px; color: var(--completed-text); margin: 0;">(Tap a time to delete)</p>
-                </div>
-                
-                <div id="reminder-time-container" style="display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap;">
-                    <button id="add-time-btn" class="time-pill" style="font-weight: bold; font-size: 18px; padding: 5px 15px; background-color: var(--container-bg); border-style: dashed;">+</button>
-                </div>
-
-                <button id="save-task-settings-btn" class="auth-btn" style="width: 100%; padding: 15px; border-radius: 30px; font-size: 16px; background-color: #4285F4;">Save</button>
-            </div>
-            
+            <button id="save-task-settings-btn" class="auth-btn" style="width: 100%; padding: 15px; border-radius: 30px; font-size: 16px; background-color: #4285F4; margin-top: 30px; box-shadow: 0 4px 10px rgba(66, 133, 244, 0.3);">Save Changes</button>
         </div>
     </div>
 
+    <!-- BOTTOM NAVIGATION -->
     <nav class="bottom-nav">
-        <button class="nav-item active" id="nav-tasks"><span class="icon">📝</span><span class="label" data-i18n="nav-tasks">Tasks</span></button>
-        <button class="nav-item" id="nav-calendar"><span class="icon">📅</span><span class="label" data-i18n="nav-calendar">Calendar</span></button>
-        <button class="nav-item" id="nav-profile"><span class="icon">👾</span><span class="label" data-i18n="nav-boo">Boo</span></button>
+        <button class="nav-item active" id="nav-tasks">
+            <svg class="svg-icon" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+            <span class="label" data-i18n="nav-tasks">Tasks</span>
+        </button>
+        <button class="nav-item" id="nav-calendar">
+            <svg class="svg-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            <span class="label" data-i18n="nav-calendar">Calendar</span>
+        </button>
+        <button class="nav-item" id="nav-profile">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12v9.5c0 .83.67 1.5 1.5 1.5.4 0 .78-.16 1.06-.44L6 21.12l1.44 1.44c.59.59 1.53.59 2.12 0L11 21.12l1.44 1.44c.59.59 1.53.59 2.12 0L16 21.12l1.44 1.44c.28.28.66.44 1.06.44.83 0 1.5-.67 1.5-1.5V12c0-5.52-4.48-10-10-10zM9 10h.01M15 10h.01"/></svg>
+            <span class="label" data-i18n="nav-boo">Boo</span>
+        </button>
     </nav>
+    
     <script src="script.js"></script>
 </body>
-
 </html>
