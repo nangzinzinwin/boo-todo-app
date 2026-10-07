@@ -1,5 +1,5 @@
-// Version 2.9 tells the phone to load the new Email Invitations, Natural Twine Bow, and Restored Habit Modal!
-const CACHE_NAME = 'boo-v2.9';
+// Version 3.0 tells the phone to load the new Email Invitations, Native Time Picker, and Clean UI updates!
+const CACHE_NAME = 'boo-v3.0';
 
 // The exact list of files the phone will save for Offline Mode
 const ASSETS_TO_CACHE = [
@@ -21,7 +21,7 @@ const ASSETS_TO_CACHE = [
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
-            console.log('Caching all Boo assets for v2.8...');
+            console.log('Caching all Boo assets for v3.0...');
             return cache.addAll(ASSETS_TO_CACHE);
         })
     );
